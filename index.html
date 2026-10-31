@@ -1,0 +1,2707 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>하프몬 카드 메이커</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .card-font {
+      font-family: 'Gowun Dodum', 'Noto Sans KR', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+  <!-- Top Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-rose-500 flex items-center justify-center text-white font-black text-xl shadow-md border-2 border-white ring-2 ring-rose-400">
+          ●
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-black tracking-tight text-slate-900 leading-none">하프몬 카드 메이커</h1>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">나만의 오리지널 카드를 실시간 제작 & 300 DPI PNG 다운로드</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="downloadBleedBtnTop" class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow transition-all active:scale-95 text-xs">
+          <span>✂️ 2mm 재단용 다운</span>
+        </button>
+        <button id="downloadBtnTop" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-900 font-bold rounded-xl shadow-md transition-all active:scale-95 text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          300 DPI 다운로드
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Form Controls (7 cols on lg) -->
+      <section class="lg:col-span-7 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200 space-y-6">
+        
+        <!-- 1. 카드 대분류 (하프몬 vs 트레이너스 vs 에너지) -->
+        <div>
+          <div class="mb-5 pb-4 border-b border-slate-100">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black tracking-wide text-slate-800 uppercase flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                카드 종류 (대분류)
+              </label>
+              <div class="flex items-center gap-2">
+                <button type="button" id="randomCardBtn" class="text-xs px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded-lg transition active:scale-95 flex items-center gap-1">
+                  🎲 랜덤 하프몬 생성
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2.5 p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200 shadow-inner">
+              <button type="button" id="cardCategoryAlbbamon" class="card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all shadow-sm bg-white text-blue-600 border border-slate-200/80 hover:shadow">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shrink-0"></span>
+                <span>하프몬</span>
+              </button>
+              <button type="button" id="cardCategoryTrainer" class="card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shrink-0"></span>
+                <span>트레이너스</span>
+              </button>
+              <button type="button" id="cardCategoryEnergyBtn" class="card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shrink-0"></span>
+                <span>에너지</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- 카드 이름 -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-bold text-slate-700">카드 이름</label>
+                <label id="trainerAlbbamonLabel" class="flex items-center gap-1 cursor-pointer select-none text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition">
+                  <input id="isTrainerAlbbamon" type="checkbox" class="w-3.5 h-3.5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer">
+                  <span>트레이너의 하프몬</span>
+                </label>
+              </div>
+              <input id="cardName" type="text" value="이부리" maxlength="75" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition font-bold" placeholder="카드 이름을 입력하세요">
+              
+              <!-- 트레이너명 입력창 (체크 시 표시) -->
+              <div id="trainerNameWrapper" class="hidden mt-2 flex items-center gap-2 p-2 bg-indigo-50/70 border border-indigo-200 rounded-lg">
+                <span class="text-xs font-bold text-indigo-800 shrink-0">트레이너:</span>
+                <input id="trainerPrefix" type="text" value="지우" maxlength="10" class="w-full px-2.5 py-1 text-xs bg-white border border-indigo-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-indigo-900" placeholder="예: 지우, 난천, N">
+                <span class="text-xs font-bold text-indigo-700 shrink-0">의</span>
+              </div>
+            </div>
+
+            <!-- HP (체력) -->
+            <div id="cardHpContainer">
+              <label class="block text-xs font-bold text-slate-700 mb-1">HP (체력 - 비워두면 숨김)</label>
+              <input id="cardHp" type="text" value="80" maxlength="4" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition font-bold" placeholder="예: 80">
+            </div>
+
+            <!-- 하프몬 속성 타입 -->
+            <div id="albbamonTypeSelector" class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                <span>하프몬 타입 (속성 심볼)</span>
+                <span class="text-[11px] text-slate-400 font-normal">HP 우측 및 에너지 중앙 엠블럼으로 표시됩니다</span>
+              </label>
+              <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 rounded-xl border border-slate-200">
+                <button type="button" data-type="depression" class="type-btn py-2 px-3 rounded-lg text-xs font-black transition-all border border-blue-500 bg-blue-50 text-blue-600 shadow-sm flex items-center justify-center gap-1.5">
+                  <span class="text-base leading-none">🌀</span> 우울 (물/휴식)
+                </button>
+                <button type="button" data-type="madness" class="type-btn py-2 px-3 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1.5">
+                  <span class="text-base leading-none">🔥</span> 광기 (불꽃)
+                </button>
+                <button type="button" data-type="purity" class="type-btn py-2 px-3 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1.5">
+                  <span class="text-base leading-none">🍀</span> 순수 (풀/생명)
+                </button>
+              </div>
+            </div>
+
+            <!-- 카드 세부 분류 영역 -->
+            <div class="sm:col-span-2">
+              <div id="albbamonStageButtons" class="mb-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">하프몬 진화 단계</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button type="button" data-stage="기본 하프몬" class="stage-btn py-2 px-3 rounded-lg text-xs font-extrabold transition-all border border-blue-500 bg-blue-50 text-blue-700 shadow-sm flex items-center justify-center gap-1.5">
+                    <span class="text-blue-500">●</span> 기본 하프몬
+                  </button>
+                  <button type="button" data-stage="1진화" class="stage-btn py-2 px-3 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1.5">
+                    <span class="text-slate-400">▲</span> 1진화
+                  </button>
+                  <button type="button" data-stage="2진화" class="stage-btn py-2 px-3 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1.5">
+                    <span class="text-slate-400">★</span> 2진화
+                  </button>
+                </div>
+              </div>
+
+              <div id="trainerStageButtons" class="mb-3 hidden">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">트레이너스 세부 분류</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button type="button" data-trainer-type="아이템" class="trainer-type-btn py-2 px-2.5 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1">
+                    <span>📦</span> 아이템
+                  </button>
+                  <button type="button" data-trainer-type="하프몬의 도구" class="trainer-type-btn py-2 px-2.5 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1">
+                    <span>🧰</span> 하프몬의 도구
+                  </button>
+                  <button type="button" data-trainer-type="서포트" class="trainer-type-btn py-2 px-2.5 rounded-lg text-xs font-extrabold transition-all border border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm flex items-center justify-center gap-1">
+                    <span>👤</span> 서포트
+                  </button>
+                  <button type="button" data-trainer-type="스타디움" class="trainer-type-btn py-2 px-2.5 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1">
+                    <span>🏟️</span> 스타디움
+                  </button>
+                </div>
+              </div>
+
+              <!-- 세부 분류 직접 입력창 및 ex 체크박스 -->
+              <label class="block text-xs font-bold text-slate-700 mb-1">카드 세부 분류 텍스트</label>
+              <div class="flex items-center gap-2">
+                <input id="cardSub" type="text" value="기본 하프몬" maxlength="15" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" placeholder="예: 기본 하프몬 / 서포트">
+                <label class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200/80 border border-slate-300 rounded-lg cursor-pointer select-none transition shrink-0" title="카드 이름 뒤에 ex 마크를 표시합니다">
+                  <input id="isExCard" type="checkbox" class="w-4 h-4 text-rose-600 rounded border-slate-300 focus:ring-rose-500 cursor-pointer">
+                  <span class="text-xs font-black tracking-wider text-rose-600 italic">ex</span>
+                </label>
+              </div>
+
+              <div id="preEvoWrapper" class="hidden mt-2 flex items-center gap-2 p-2 bg-blue-50/70 border border-blue-200 rounded-lg">
+                <span class="text-xs font-bold text-blue-800 shrink-0">진화 전 하프몬:</span>
+                <input id="preEvoName" type="text" value="솜솜이" maxlength="15" class="w-full px-2.5 py-1 text-xs bg-white border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none font-bold text-blue-900">
+                <span class="text-xs font-bold text-blue-700 shrink-0">에서 진화</span>
+              </div>
+            </div>
+
+            <!-- 카드 테두리 색상 -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">외곽 테두리 색상</label>
+              <div class="flex items-center gap-2">
+                <input id="borderColor" type="color" value="#0284c7" class="h-9 w-12 rounded cursor-pointer border border-slate-300 bg-white p-0.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <button type="button" data-color="#0284c7" class="color-preset-btn w-6 h-6 rounded-full bg-sky-600 border-2 border-white shadow hover:scale-110 transition" title="우울/스카이블루"></button>
+                  <button type="button" data-color="#f59e0b" class="color-preset-btn w-6 h-6 rounded-full bg-amber-500 border-2 border-white shadow hover:scale-110 transition" title="클래식 골드/옐로우"></button>
+                  <button type="button" data-color="#ef4444" class="color-preset-btn w-6 h-6 rounded-full bg-red-500 border-2 border-white shadow hover:scale-110 transition" title="광기/레드"></button>
+                  <button type="button" data-color="#16a34a" class="color-preset-btn w-6 h-6 rounded-full bg-green-600 border-2 border-white shadow hover:scale-110 transition" title="순수/그린"></button>
+                  <button type="button" data-color="#7c3aed" class="color-preset-btn w-6 h-6 rounded-full bg-violet-600 border-2 border-white shadow hover:scale-110 transition" title="초능력/퍼플"></button>
+                  <button type="button" data-color="#334155" class="color-preset-btn w-6 h-6 rounded-full bg-slate-700 border-2 border-white shadow hover:scale-110 transition" title="다크/메탈"></button>
+                  <button type="button" data-color="#059669" class="color-preset-btn w-6 h-6 rounded-full bg-emerald-600 border-2 border-white shadow hover:scale-110 transition" title="트레이너스/에메랄드"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 카드 본체 바탕색 & 텍스처 -->
+            <div class="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-black tracking-wide text-slate-800 uppercase flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                  카드 본체 바탕색 & 텍스처 합성
+                </label>
+              </div>
+
+              <!-- 바탕색 -->
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                <label class="block text-xs font-bold text-slate-700">1. 카드 본체 바탕색</label>
+                <div class="flex items-center gap-2">
+                  <input id="cardBaseBgColor" type="color" value="#ffffff" class="h-8 w-11 rounded cursor-pointer border border-slate-300 bg-white p-0.5">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button type="button" data-body-color="#ffffff" class="body-color-preset w-5 h-5 rounded-full bg-white border-2 border-slate-300 shadow hover:scale-110 transition" title="화이트"></button>
+                    <button type="button" data-body-color="#f8fafc" class="body-color-preset w-5 h-5 rounded-full bg-slate-100 border-2 border-slate-300 shadow hover:scale-110 transition" title="라이트 그레이"></button>
+                    <button type="button" data-body-color="#fef3c7" class="body-color-preset w-5 h-5 rounded-full bg-amber-100 border-2 border-slate-300 shadow hover:scale-110 transition" title="소프트 옐로우"></button>
+                    <button type="button" data-body-color="#e0f2fe" class="body-color-preset w-5 h-5 rounded-full bg-sky-100 border-2 border-slate-300 shadow hover:scale-110 transition" title="소프트 블루"></button>
+                    <button type="button" data-body-color="#fee2e2" class="body-color-preset w-5 h-5 rounded-full bg-rose-100 border-2 border-slate-300 shadow hover:scale-110 transition" title="소프트 레드"></button>
+                    <button type="button" data-body-color="#1e293b" class="body-color-preset w-5 h-5 rounded-full bg-slate-800 border-2 border-slate-300 shadow hover:scale-110 transition" title="다크 네이비"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 텍스처 -->
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between">
+                  <label class="block text-xs font-bold text-slate-700">2. 텍스처 이미지 및 투명도</label>
+                  <button id="resetTextureBtn" type="button" class="text-xs text-slate-500 hover:text-rose-600 font-semibold underline transition">
+                    텍스처 제거
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <label for="textureUpload" class="cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition active:scale-95 shadow">
+                    텍스처 업로드
+                  </label>
+                  <input id="textureUpload" type="file" accept="image/*" class="hidden">
+                  <span id="textureStatusLabel" class="text-[11px] text-slate-400 font-medium">선택된 텍스처 없음</span>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-600">불투명도</span>
+                    <span id="textureOpacityDisplay" class="font-black text-indigo-600">50%</span>
+                  </div>
+                  <input id="textureOpacity" type="range" min="0" max="100" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                </div>
+              </div>
+            </div>
+
+            <!-- 홀로그램 반사광 필터 효과 -->
+            <div class="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-black tracking-wide text-slate-800 uppercase flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  TCG 홀로그램 반사광 (Foil Overlay)
+                </label>
+                <span class="text-[11px] text-slate-400 font-medium">실제 홀로 카드처럼 빛나는 반사 필터</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button type="button" data-holo="none" class="holo-type-btn py-2 px-2.5 rounded-lg text-xs font-extrabold border border-amber-500 bg-amber-50 text-amber-800 shadow-sm transition">
+                  없음 (일반)
+                </button>
+                <button type="button" data-holo="cosmos" class="holo-type-btn py-2 px-2.5 rounded-lg text-xs font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white transition">
+                  🌌 코스모스
+                </button>
+                <button type="button" data-holo="diagonal" class="holo-type-btn py-2 px-2.5 rounded-lg text-xs font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white transition">
+                  🌈 사선 포일
+                </button>
+                <button type="button" data-holo="starlight" class="holo-type-btn py-2 px-2.5 rounded-lg text-xs font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white transition">
+                  ✨ 스타라이트
+                </button>
+              </div>
+              <div class="space-y-1 pt-1">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-slate-600">반사광 세기 (강도)</span>
+                  <span id="holoIntensityDisplay" class="font-black text-amber-600">65%</span>
+                </div>
+                <input id="holoIntensity" type="range" min="10" max="100" value="65" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Illustration Settings -->
+        <div id="illustrationSettingsSection">
+          <h2 class="text-base font-extrabold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+            카드 일러스트 이미지 & 프레임
+          </h2>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">일러스트 표시 방식</label>
+              <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
+                <button type="button" id="artTypeStandard" class="art-type-btn flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm bg-white text-slate-900 border border-slate-200">
+                  일반 (중앙 프레임)
+                </button>
+                <button type="button" id="artTypeFull" class="art-type-btn flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                  특별 (풀아트 전면)
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <label for="imageUpload" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-semibold transition active:scale-95 shadow">
+                앞면 일러스트 업로드
+              </label>
+              <input id="imageUpload" type="file" accept="image/*" class="hidden">
+              <button id="resetImageBtn" type="button" class="text-xs text-slate-500 hover:text-rose-600 font-semibold underline transition">
+                기본 이불 일러스트로 되돌리기
+              </button>
+            </div>
+
+            <!-- 일러스트 위치 & 확대 조절 컨트롤 (Pan & Zoom) -->
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                <span>일러스트 미세 위치 및 배율 (줌 & 패닝)</span>
+                <button type="button" id="resetTransformBtn" class="text-[11px] text-indigo-600 hover:underline">위치 초기화</button>
+              </div>
+              <div class="grid grid-cols-3 gap-3 text-xs">
+                <div>
+                  <label class="block text-slate-500 mb-1">확대/축소</label>
+                  <input id="imgScale" type="range" min="50" max="250" value="100" class="w-full accent-indigo-600">
+                </div>
+                <div>
+                  <label class="block text-slate-500 mb-1">가로 위치 (X)</label>
+                  <input id="imgOffsetX" type="range" min="-150" max="150" value="0" class="w-full accent-indigo-600">
+                </div>
+                <div>
+                  <label class="block text-slate-500 mb-1">세로 위치 (Y)</label>
+                  <input id="imgOffsetY" type="range" min="-150" max="150" value="0" class="w-full accent-indigo-600">
+                </div>
+              </div>
+            </div>
+
+            <!-- 중앙 프레임 배경 이미지 커스텀 -->
+            <div id="frameBgWrapper" class="pt-2 border-t border-slate-100 flex items-center gap-3">
+              <label for="frameBgUpload" class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold transition active:scale-95 shadow">
+                중앙 프레임 배경 업로드
+              </label>
+              <input id="frameBgUpload" type="file" accept="image/*" class="hidden">
+              <button id="resetFrameBgBtn" type="button" class="text-xs text-slate-500 hover:text-rose-600 font-semibold underline transition">
+                프레임 배경 초기화
+              </button>
+            </div>
+          </div>
+
+          <!-- 뒷면 일러스트 설정 구역 -->
+          <div class="mt-4 pt-3 border-t border-slate-100 space-y-2">
+            <label class="block text-xs font-bold text-slate-700">카드 뒷면 일러스트 커스텀</label>
+            <div class="flex items-center gap-3">
+              <label for="backImageUpload" class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition active:scale-95 shadow">
+                뒷면 일러스트 업로드
+              </label>
+              <input id="backImageUpload" type="file" accept="image/*" class="hidden">
+              <button id="resetBackImageBtn" type="button" class="text-xs text-slate-500 hover:text-rose-600 font-semibold underline transition">
+                기본 HARP 뒷면으로 복구
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-400">※ 뒷면 이미지를 업로드하면 카드 뒷면에 온전히 적용됩니다.</p>
+          </div>
+        </div>
+
+        <!-- Attack Moves (하프몬 전용) -->
+        <div id="albbamonMovesContainer" class="space-y-4">
+          <!-- Move 1 -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+                기술 1 (또는 특성)
+              </h2>
+              <label class="flex items-center gap-1.5 cursor-pointer select-none text-xs font-bold text-rose-600 hover:text-rose-700 transition">
+                <input id="isMove1Ability" type="checkbox" class="w-4 h-4 text-rose-600 rounded border-slate-300 focus:ring-rose-500 cursor-pointer">
+                <span>특성으로 변경</span>
+              </label>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-2">
+              <div id="move1CostWrapper" class="sm:col-span-1">
+                <label class="block text-xs font-bold text-slate-600 mb-1">에너지 기호</label>
+                <input id="move1Cost" type="text" value="🌀" maxlength="6" class="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="비우면 생략">
+              </div>
+              <div id="move1NameWrapper" class="sm:col-span-2">
+                <label id="move1NameLabel" class="block text-xs font-bold text-slate-600 mb-1">기술 이름</label>
+                <input id="move1Name" type="text" value="이불 덮기" maxlength="20" class="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none font-bold">
+              </div>
+              <div id="move1DmgWrapper" class="sm:col-span-1">
+                <label class="block text-xs font-bold text-slate-600 mb-1">데미지</label>
+                <input id="move1Dmg" type="text" value="30" maxlength="6" class="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-right font-black">
+              </div>
+            </div>
+            <div>
+              <label id="move1DescLabel" class="block text-xs font-bold text-slate-600 mb-1">설명문</label>
+              <textarea id="move1Desc" rows="2" class="w-full px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none">이 하프몬의 HP를 20 회복하고 잠듦 상태로 만든다.</textarea>
+            </div>
+          </div>
+
+          <!-- Move 2 -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <h2 class="text-sm font-extrabold text-slate-800 flex items-center justify-between mb-3">
+              <span class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+                기술 2 (필살기 / 대형 기술)
+              </span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-2">
+              <div class="sm:col-span-1">
+                <label class="block text-xs font-bold text-slate-600 mb-1">에너지 기호</label>
+                <input id="move2Cost" type="text" value="🌀🌀✶" maxlength="6" class="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="비우면 생략">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-600 mb-1">기술 이름</label>
+                <input id="move2Name" type="text" value="푹신푹신 프레스" maxlength="20" class="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none font-bold">
+              </div>
+              <div class="sm:col-span-1">
+                <label class="block text-xs font-bold text-slate-600 mb-1">데미지</label>
+                <input id="move2Dmg" type="text" value="90" maxlength="6" class="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-right font-black">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">설명문</label>
+              <textarea id="move2Desc" rows="2" class="w-full px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none">상대 하프몬을 마비 상태로 만든다.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trainer Card Text Container -->
+        <div id="trainerTextContainer" class="hidden bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <h2 class="text-sm font-extrabold text-slate-800 flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+            트레이너스 효과 설명문
+          </h2>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">효과 및 사용 설명</label>
+            <textarea id="trainerDesc" rows="3" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none leading-relaxed" placeholder="카드의 효과를 입력하세요. 엔터로 줄바꿈할 수 있습니다.">자신의 패를 모두 트래쉬하고 덱을 7장 뽑는다.
+서포트는 자신의 차례에 1장만 사용할 수 있다.</textarea>
+          </div>
+        </div>
+
+        <!-- Flavor Text Section -->
+        <div>
+          <h2 class="text-base font-extrabold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block"></span>
+            카드 도감 / 설명문 (에너지 카드는 제외)
+          </h2>
+          <div>
+            <textarea id="flavorText" rows="2" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none">한번 들어가면 절대 빠져나올 수 없는 마성의 포근함을 지녔다.</textarea>
+          </div>
+        </div>
+
+        <!-- Status & Meta Section -->
+        <div id="statusSectionWrapper">
+          <h2 class="text-base font-extrabold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span>
+            하단 상태 (약점 / 저항력 / 후퇴)
+          </h2>
+          <div id="statusInputGrid" class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">약점</label>
+              <input id="weakness" type="text" value="🔥 ×2" maxlength="10" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">저항력</label>
+              <input id="resistance" type="text" value="🌀 -30" maxlength="10" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">후퇴</label>
+              <input id="retreat" type="text" value="✶" maxlength="10" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+          </div>
+          <div id="trainerNotice" class="hidden p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-500 font-medium">
+            ※ 트레이너스 카드 선택 시 약점 / 저항력 / 후퇴 영역은 카드에 표시되지 않습니다.
+          </div>
+
+          <!-- Bottom Meta: Illustrator & Codes -->
+          <div id="bottomMetaWrapper">
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <label class="block text-xs font-bold text-slate-700 mb-1">일러스트레이터 정보</label>
+              <input id="illustrator" type="text" value="Illus. Hanryang Creator" maxlength="30" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 mt-3">
+              <div class="sm:col-span-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1">레귤레이션 (1자)</label>
+                <input id="regulationMark" type="text" value="H" maxlength="1" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-center font-black uppercase">
+              </div>
+              <div class="sm:col-span-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1">카드팩 번호</label>
+                <input id="setCardPack" type="text" value="HPM1" maxlength="6" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-bold">
+              </div>
+              <div class="sm:col-span-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1">컬렉션 번호</label>
+                <input id="collectionNum" type="text" value="007/045" maxlength="15" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+              <div class="sm:col-span-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1">카드 레어도</label>
+                <input id="cardRarity" type="text" value="RR" maxlength="10" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none font-black text-center">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download Action Buttons -->
+        <div class="pt-2 space-y-2.5">
+          <button id="downloadBtn" type="button" class="w-full py-3.5 px-6 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-900 font-extrabold rounded-xl shadow-lg transition active:scale-[0.98] flex items-center justify-center gap-3 text-base">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            현재 면 (300 DPI PNG) 다운로드
+          </button>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button id="downloadBothBtn" type="button" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow transition active:scale-[0.98] flex items-center justify-center gap-2 text-xs sm:text-sm">
+              <span>📦 앞/뒷면 일괄 다운로드</span>
+            </button>
+            <button id="downloadBleedBtn" type="button" class="py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition active:scale-[0.98] flex items-center justify-center gap-2 text-xs sm:text-sm">
+              <span>✂️ 2mm 재단 모드 다운 (인쇄소용)</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT: Preview Canvas (5 cols on lg) -->
+      <section class="lg:col-span-5 flex flex-col items-center">
+        <div class="sticky top-20 w-full flex flex-col items-center">
+          <div class="flex items-center justify-between w-full mb-2 px-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold tracking-wider text-slate-500 uppercase">카드 미리보기</span>
+              <!-- 5mm 귀도리 / 2mm 재단선 가이드 토글 -->
+              <label class="flex items-center gap-1.5 cursor-pointer select-none text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200 hover:bg-rose-100 transition">
+                <input id="showBleedGuide" type="checkbox" class="w-3.5 h-3.5 text-rose-600 rounded border-rose-300 focus:ring-rose-500 cursor-pointer">
+                <span>5mm 귀도리 / 2mm 재단선</span>
+              </label>
+            </div>
+            <div class="flex items-center gap-1 bg-slate-200/80 p-0.5 rounded-lg border border-slate-300">
+              <button id="viewFrontBtn" type="button" class="px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-sm transition">
+                앞면
+              </button>
+              <button id="viewBackBtn" type="button" class="px-2.5 py-1 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
+                뒷면
+              </button>
+            </div>
+          </div>
+
+          <!-- Canvas Container -->
+          <div class="w-full max-w-[420px] bg-slate-200/50 p-3 sm:p-4 rounded-3xl border border-slate-300 shadow-xl flex items-center justify-center">
+            <canvas id="cardCanvas" width="750" height="1050" class="w-full h-auto rounded-2xl shadow-2xl block"></canvas>
+          </div>
+
+          <div class="flex items-center justify-between w-full max-w-[420px] mt-2 px-2">
+            <span id="canvasSideIndicator" class="text-xs text-slate-500 font-semibold">● 현재 보기: 앞면</span>
+            <button id="flipCardBtn" type="button" class="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-bold underline transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              카드 뒤집기
+            </button>
+          </div>
+
+          <div class="mt-3 flex items-center justify-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs font-bold shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            <span>인쇄 규격 300 DPI (1500 × 2100 px) 고해상도 출력 지원</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    // Canvas & Context Setup
+    const canvas = document.getElementById('cardCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // View Switching Elements
+    const viewFrontBtn = document.getElementById('viewFrontBtn');
+    const viewBackBtn = document.getElementById('viewBackBtn');
+    const flipCardBtn = document.getElementById('flipCardBtn');
+    const canvasSideIndicator = document.getElementById('canvasSideIndicator');
+    const showBleedGuideInput = document.getElementById('showBleedGuide');
+    let currentCardSide = 'front'; // 'front' | 'back'
+
+    // UI Input Elements
+    const cardCategoryAlbbamonBtn = document.getElementById('cardCategoryAlbbamon');
+    const cardCategoryTrainerBtn = document.getElementById('cardCategoryTrainer');
+    const cardCategoryEnergyBtn = document.getElementById('cardCategoryEnergyBtn');
+    const cardNameInput = document.getElementById('cardName');
+    const isTrainerAlbbamonInput = document.getElementById('isTrainerAlbbamon');
+    const trainerAlbbamonLabel = document.getElementById('trainerAlbbamonLabel');
+    const trainerNameWrapper = document.getElementById('trainerNameWrapper');
+    const trainerPrefixInput = document.getElementById('trainerPrefix');
+    const cardHpInput = document.getElementById('cardHp');
+    
+    // Type Elements
+    const albbamonTypeSelector = document.getElementById('albbamonTypeSelector');
+    const cardSubInput = document.getElementById('cardSub');
+    const isExCardInput = document.getElementById('isExCard');
+    const preEvoWrapper = document.getElementById('preEvoWrapper');
+    const preEvoNameInput = document.getElementById('preEvoName');
+    const borderColorInput = document.getElementById('borderColor');
+
+    // 카드 본체 바탕색 & 텍스처 관련 요소
+    const cardBaseBgColorInput = document.getElementById('cardBaseBgColor');
+    const bodyColorPresetBtns = document.querySelectorAll('.body-color-preset');
+    const textureUploadInput = document.getElementById('textureUpload');
+    const textureStatusLabel = document.getElementById('textureStatusLabel');
+    const textureOpacityInput = document.getElementById('textureOpacity');
+    const textureOpacityDisplay = document.getElementById('textureOpacityDisplay');
+    const resetTextureBtn = document.getElementById('resetTextureBtn');
+
+    // 앞면 일러스트 및 프레임 배경 요소
+    const imageUploadInput = document.getElementById('imageUpload');
+    const resetImageBtn = document.getElementById('resetImageBtn');
+    const frameBgUploadInput = document.getElementById('frameBgUpload');
+    const resetFrameBgBtn = document.getElementById('resetFrameBgBtn');
+    const frameBgWrapper = document.getElementById('frameBgWrapper');
+
+    // Pan & Zoom 컨트롤
+    const imgScaleInput = document.getElementById('imgScale');
+    const imgOffsetXInput = document.getElementById('imgOffsetX');
+    const imgOffsetYInput = document.getElementById('imgOffsetY');
+    const resetTransformBtn = document.getElementById('resetTransformBtn');
+
+    // 뒷면 이미지 요소
+    const backImageUploadInput = document.getElementById('backImageUpload');
+    const resetBackImageBtn = document.getElementById('resetBackImageBtn');
+
+    // Art Type Elements
+    const artTypeStandardBtn = document.getElementById('artTypeStandard');
+    const artTypeFullBtn = document.getElementById('artTypeFull');
+
+    // 홀로그램 필터 컨트롤
+    const holoTypeBtns = document.querySelectorAll('.holo-type-btn');
+    const holoIntensityInput = document.getElementById('holoIntensity');
+    const holoIntensityDisplay = document.getElementById('holoIntensityDisplay');
+
+    // Attacks & Trainer Controls
+    const albbamonMovesContainer = document.getElementById('albbamonMovesContainer');
+    const isMove1AbilityInput = document.getElementById('isMove1Ability');
+    const move1CostWrapper = document.getElementById('move1CostWrapper');
+    const move1NameWrapper = document.getElementById('move1NameWrapper');
+    const move1DmgWrapper = document.getElementById('move1DmgWrapper');
+    const move1NameLabel = document.getElementById('move1NameLabel');
+    const move1DescLabel = document.getElementById('move1DescLabel');
+
+    const move1CostInput = document.getElementById('move1Cost');
+    const move1NameInput = document.getElementById('move1Name');
+    const move1DmgInput = document.getElementById('move1Dmg');
+    const move1DescInput = document.getElementById('move1Desc');
+
+    const move2CostInput = document.getElementById('move2Cost');
+    const move2NameInput = document.getElementById('move2Name');
+    const move2DmgInput = document.getElementById('move2Dmg');
+    const move2DescInput = document.getElementById('move2Desc');
+
+    const trainerTextContainer = document.getElementById('trainerTextContainer');
+    const trainerDescInput = document.getElementById('trainerDesc');
+
+    // Status & Footer Elements
+    const statusInputGrid = document.getElementById('statusInputGrid');
+    const trainerNotice = document.getElementById('trainerNotice');
+    const bottomMetaWrapper = document.getElementById('bottomMetaWrapper');
+    const illustrationSettingsSection = document.getElementById('illustrationSettingsSection');
+    const weaknessInput = document.getElementById('weakness');
+    const resistanceInput = document.getElementById('resistance');
+    const retreatInput = document.getElementById('retreat');
+    const flavorTextInput = document.getElementById('flavorText');
+    const illustratorInput = document.getElementById('illustrator');
+    const regulationMarkInput = document.getElementById('regulationMark');
+    const setCardPackInput = document.getElementById('setCardPack');
+    const collectionNumInput = document.getElementById('collectionNum');
+    const cardRarityInput = document.getElementById('cardRarity');
+
+    // Action Buttons
+    const downloadBtn = document.getElementById('downloadBtn');
+    const downloadBtnTop = document.getElementById('downloadBtnTop');
+    const downloadBothBtn = document.getElementById('downloadBothBtn');
+    const downloadBleedBtn = document.getElementById('downloadBleedBtn');
+    const downloadBleedBtnTop = document.getElementById('downloadBleedBtnTop');
+    const randomCardBtn = document.getElementById('randomCardBtn');
+    const colorPresetBtns = document.querySelectorAll('.color-preset-btn');
+    
+    // Stage Buttons
+    const albbamonStageButtons = document.getElementById('albbamonStageButtons');
+    const stageBtns = document.querySelectorAll('.stage-btn');
+    const trainerStageButtons = document.getElementById('trainerStageButtons');
+    const trainerTypeBtns = document.querySelectorAll('.trainer-type-btn');
+
+    // State Variables
+    let currentTextureImg = null;
+    let currentImage = null;
+    let isDefaultImage = true;
+    let currentFrameBg = null;
+    let currentBackImage = null;
+    let cardArtType = 'standard'; // 'standard' | 'full'
+    let cardCategory = 'albbamon'; // 'albbamon' | 'trainer' | 'energy'
+    let currentCardType = 'depression'; // 'madness' | 'depression' | 'purity'
+    let currentHoloType = 'none'; // 'none' | 'cosmos' | 'diagonal' | 'starlight'
+
+    const TYPE_DATA = {
+      madness: {
+        name: '광기',
+        icon: '🔥',
+        bgColor: '#ef4444',
+        glowColor: 'rgba(239, 68, 68, 0.45)'
+      },
+      depression: {
+        name: '우울',
+        icon: '🌀',
+        bgColor: '#3b82f6',
+        glowColor: 'rgba(59, 130, 246, 0.45)'
+      },
+      purity: {
+        name: '순수',
+        icon: '🍀',
+        bgColor: '#10b981',
+        glowColor: 'rgba(16, 185, 129, 0.45)'
+      }
+    };
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      if (typeof radius === 'undefined') radius = 5;
+      if (typeof radius === 'number') {
+        radius = { tl: radius, tr: radius, br: radius, bl: radius };
+      } else {
+        radius = Object.assign({ tl: 0, tr: 0, br: 0, bl: 0 }, radius);
+      }
+      ctx.beginPath();
+      ctx.moveTo(x + radius.tl, y);
+      ctx.lineTo(x + width - radius.tr, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+      ctx.lineTo(x + width, y + height - radius.br);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+      ctx.lineTo(x + radius.bl, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+      ctx.lineTo(x, y + radius.tl);
+      ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+      ctx.closePath();
+    }
+
+    function drawImageCover(ctx, img, dx, dy, dWidth, dHeight, scale = 1, offsetX = 0, offsetY = 0) {
+      if (!img || !img.complete) return;
+      const imgRatio = img.width / img.height;
+      const boxRatio = dWidth / dHeight;
+      let sWidth, sHeight, sx, sy;
+
+      if (imgRatio > boxRatio) {
+        sHeight = img.height;
+        sWidth = img.height * boxRatio;
+        sx = (img.width - sWidth) / 2;
+        sy = 0;
+      } else {
+        sWidth = img.width;
+        sHeight = img.width / boxRatio;
+        sx = 0;
+        sy = (img.height - sHeight) / 2;
+      }
+
+      ctx.save();
+      const cx = dx + dWidth / 2;
+      const cy = dy + dHeight / 2;
+      ctx.translate(cx + offsetX, cy + offsetY);
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, sx, sy, sWidth, sHeight, -dWidth / 2, -dHeight / 2, dWidth, dHeight);
+      ctx.restore();
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
+      const words = (text || '').split('');
+      let line = '';
+      let currentY = y;
+      let lineCount = 0;
+
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n];
+        const testWidth = ctx.measureText(testLine).width;
+        if (testWidth > maxWidth && n > 0) {
+          ctx.fillText(line, x, currentY);
+          line = words[n];
+          currentY += lineHeight;
+          lineCount++;
+          if (lineCount >= maxLines - 1) {
+            let truncated = text.substring(n);
+            while (ctx.measureText(truncated + '...').width > maxWidth && truncated.length > 0) {
+              truncated = truncated.slice(0, -1);
+            }
+            ctx.fillText(truncated + '...', x, currentY);
+            return;
+          }
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, currentY);
+    }
+
+    function wrapMultilineText(ctx, fullText, x, y, maxWidth, lineHeight, maxLines = 10) {
+      const paragraphs = (fullText || '').split('\n');
+      let currentY = y;
+      let lineCount = 0;
+
+      for (let p = 0; p < paragraphs.length; p++) {
+        const paragraph = paragraphs[p];
+        if (paragraph === '') {
+          currentY += lineHeight * 0.75;
+          continue;
+        }
+
+        const chars = paragraph.split('');
+        let line = '';
+
+        for (let n = 0; n < chars.length; n++) {
+          const testLine = line + chars[n];
+          if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+            ctx.fillText(line, x, currentY);
+            line = chars[n];
+            currentY += lineHeight;
+            lineCount++;
+            if (lineCount >= maxLines) return;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line, x, currentY);
+        currentY += lineHeight;
+        lineCount++;
+        if (lineCount >= maxLines) return;
+      }
+    }
+
+    // 기본 이불 캐릭터 일러스트레이션 (이부리)
+    function createDefaultArtwork(includeBackground = true) {
+      const artCanvas = document.createElement('canvas');
+      artCanvas.width = 750;
+      artCanvas.height = 1050;
+      const actx = artCanvas.getContext('2d');
+
+      if (includeBackground) {
+        // 따뜻하고 아늑한 방 안 그라디언트 배경
+        const bgGrad = actx.createLinearGradient(0, 0, 0, 1050);
+        bgGrad.addColorStop(0, '#fef3c7');
+        bgGrad.addColorStop(0.4, '#e0f2fe');
+        bgGrad.addColorStop(1, '#bae6fd');
+        actx.fillStyle = bgGrad;
+        actx.fillRect(0, 0, 750, 1050);
+
+        // 은은한 햇살 반사광
+        actx.save();
+        actx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        actx.beginPath();
+        actx.moveTo(0, 0);
+        actx.lineTo(350, 0);
+        actx.lineTo(150, 600);
+        actx.lineTo(0, 450);
+        actx.closePath();
+        actx.fill();
+        actx.restore();
+      }
+
+      const cx = 375;
+      const cy = 460;
+
+      // 뒤쪽 푹신한 베개
+      actx.save();
+      actx.fillStyle = '#ffffff';
+      actx.strokeStyle = '#94a3b8';
+      actx.lineWidth = 6;
+      roundRect(actx, cx - 180, cy - 230, 360, 170, 40);
+      actx.fill();
+      actx.stroke();
+
+      // 베개 스티치 라인
+      actx.strokeStyle = '#cbd5e1';
+      actx.lineWidth = 3;
+      actx.setLineDash([8, 8]);
+      roundRect(actx, cx - 165, cy - 215, 330, 140, 30);
+      actx.stroke();
+      actx.restore();
+
+      // 푹신하고 포근한 하늘색 퀼팅 이불 캐릭터 몸체
+      actx.save();
+      const blanketGrad = actx.createLinearGradient(cx - 200, cy - 120, cx + 200, cy + 240);
+      blanketGrad.addColorStop(0, '#bae6fd');
+      blanketGrad.addColorStop(0.5, '#7dd3fc');
+      blanketGrad.addColorStop(1, '#38bdf8');
+      actx.fillStyle = blanketGrad;
+      actx.strokeStyle = '#0284c7';
+      actx.lineWidth = 8;
+      actx.lineJoin = 'round';
+
+      actx.beginPath();
+      actx.moveTo(cx - 190, cy + 180);
+      actx.bezierCurveTo(cx - 230, cy + 40, cx - 210, cy - 100, cx - 140, cy - 120);
+      actx.bezierCurveTo(cx - 80, cy - 135, cx + 80, cy - 135, cx + 140, cy - 120);
+      actx.bezierCurveTo(cx + 210, cy - 100, cx + 230, cy + 40, cx + 190, cy + 180);
+      actx.bezierCurveTo(cx + 120, cy + 220, cx - 120, cy + 220, cx - 190, cy + 180);
+      actx.closePath();
+      actx.fill();
+      actx.stroke();
+
+      // 이불 상단 접힌 흰색 커버 깃
+      actx.fillStyle = '#ffffff';
+      actx.strokeStyle = '#0284c7';
+      actx.lineWidth = 6;
+      actx.beginPath();
+      actx.moveTo(cx - 150, cy - 110);
+      actx.bezierCurveTo(cx - 80, cy - 80, cx + 80, cy - 80, cx + 150, cy - 110);
+      actx.bezierCurveTo(cx + 110, cy - 40, cx - 110, cy - 40, cx - 150, cy - 110);
+      actx.closePath();
+      actx.fill();
+      actx.stroke();
+
+      // 이불 퀼팅 다이아몬드 패턴 엠보싱
+      actx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      actx.lineWidth = 4;
+      actx.beginPath();
+      actx.moveTo(cx - 140, cy + 20);
+      actx.lineTo(cx, cy - 50);
+      actx.lineTo(cx + 140, cy + 20);
+      actx.moveTo(cx - 150, cy + 100);
+      actx.lineTo(cx, cy + 30);
+      actx.lineTo(cx + 150, cy + 100);
+      actx.moveTo(cx - 120, cy + 170);
+      actx.lineTo(cx, cy + 110);
+      actx.lineTo(cx + 120, cy + 170);
+      actx.stroke();
+
+      // 양옆 앙증맞은 이불 모서리 손
+      actx.fillStyle = '#ffffff';
+      actx.strokeStyle = '#0284c7';
+      actx.lineWidth = 5;
+      actx.beginPath();
+      actx.arc(cx - 145, cy + 35, 24, 0, Math.PI * 2);
+      actx.fill();
+      actx.stroke();
+
+      actx.beginPath();
+      actx.arc(cx + 145, cy + 35, 24, 0, Math.PI * 2);
+      actx.fill();
+      actx.stroke();
+
+      // 자고 있는 귀여운 표정 (실눈 ^ ^)
+      actx.strokeStyle = '#0369a1';
+      actx.lineWidth = 6;
+      actx.beginPath();
+      actx.arc(cx - 50, cy + 15, 18, 1.1 * Math.PI, 1.9 * Math.PI);
+      actx.stroke();
+
+      actx.beginPath();
+      actx.arc(cx + 50, cy + 15, 18, 1.1 * Math.PI, 1.9 * Math.PI);
+      actx.stroke();
+
+      // 발그레한 핑크빛 볼터치
+      actx.fillStyle = 'rgba(244, 114, 182, 0.6)';
+      actx.beginPath();
+      actx.arc(cx - 85, cy + 35, 20, 0, Math.PI * 2);
+      actx.arc(cx + 85, cy + 35, 20, 0, Math.PI * 2);
+      actx.fill();
+
+      // 조그만 'ㅅ' 입
+      actx.beginPath();
+      actx.arc(cx - 8, cy + 40, 10, 0.1 * Math.PI, 0.9 * Math.PI);
+      actx.stroke();
+      actx.beginPath();
+      actx.arc(cx + 8, cy + 40, 10, 0.1 * Math.PI, 0.9 * Math.PI);
+      actx.stroke();
+
+      // 떠오르는 Zzz 수면 이모티콘
+      actx.fillStyle = '#0284c7';
+      actx.font = 'bold 36px "Gowun Dodum", sans-serif';
+      actx.fillText('Z', cx + 140, cy - 130);
+      actx.font = 'bold 28px "Gowun Dodum", sans-serif';
+      actx.fillText('z', cx + 175, cy - 165);
+      actx.font = 'bold 20px "Gowun Dodum", sans-serif';
+      actx.fillText('z', cx + 200, cy - 190);
+      actx.restore();
+
+      const img = new Image();
+      img.src = artCanvas.toDataURL();
+      return img;
+    }
+
+    // 카드 뒷면: 우아한 황금 하프(Harp) 디자인 아트워크
+    function createDefaultBackArtwork() {
+      const bCanvas = document.createElement('canvas');
+      bCanvas.width = 750;
+      bCanvas.height = 1050;
+      const bctx = bCanvas.getContext('2d');
+      const W = 750;
+      const H = 1050;
+
+      // 1. 깊은 우주 네이비/미드나잇 인디고 배경
+      const bgGrad = bctx.createLinearGradient(0, 0, W, H);
+      bgGrad.addColorStop(0, '#050814');
+      bgGrad.addColorStop(0.35, '#0c152c');
+      bgGrad.addColorStop(0.7, '#111e3f');
+      bgGrad.addColorStop(1, '#060a16');
+      bctx.fillStyle = bgGrad;
+      bctx.fillRect(0, 0, W, H);
+
+      // 2. 외곽 클래식 & 네오 TCG 골드 이중 프레임 테두리 (귀도리 5mm 및 재단 안전 40px 안쪽 배치)
+      bctx.save();
+      const goldFrameGrad = bctx.createLinearGradient(0, 0, W, H);
+      goldFrameGrad.addColorStop(0, '#fef08a');
+      goldFrameGrad.addColorStop(0.3, '#f59e0b');
+      goldFrameGrad.addColorStop(0.65, '#fbbf24');
+      goldFrameGrad.addColorStop(1, '#d97706');
+
+      bctx.strokeStyle = goldFrameGrad;
+      bctx.lineWidth = 4;
+      bctx.shadowColor = 'rgba(245, 158, 11, 0.45)';
+      bctx.shadowBlur = 10;
+      roundRect(bctx, 40, 40, W - 80, H - 80, 24);
+      bctx.stroke();
+
+      bctx.strokeStyle = 'rgba(254, 240, 138, 0.65)';
+      bctx.lineWidth = 1.6;
+      bctx.shadowBlur = 4;
+      roundRect(bctx, 48, 48, W - 96, H - 96, 18);
+      bctx.stroke();
+      bctx.restore();
+
+      // 모서리 장식 모티프 (4개 코너 코너스톤 - 58px)
+      bctx.save();
+      bctx.fillStyle = '#fbbf24';
+      [[58, 58], [W - 58, 58], [58, H - 58], [W - 58, H - 58]].forEach(([cx, cy]) => {
+        bctx.beginPath();
+        bctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+        bctx.fill();
+      });
+      bctx.restore();
+
+      // 3. 상단 엠블럼: H A R P 클래식 타이포
+      bctx.save();
+      bctx.textAlign = 'center';
+      bctx.font = '900 44px "Gowun Dodum", "Noto Sans KR", serif';
+      bctx.fillStyle = '#fef08a';
+      bctx.shadowColor = 'rgba(251, 191, 36, 0.75)';
+      bctx.shadowBlur = 16;
+      bctx.fillText('H  A  R  P', W / 2, 140);
+
+      bctx.font = '700 13px "Noto Sans KR", sans-serif';
+      bctx.fillStyle = '#93c5fd';
+      bctx.shadowBlur = 4;
+      bctx.letterSpacing = '5px';
+      bctx.fillText('• CELESTIAL SOUND TCG •', W / 2, 168);
+      bctx.restore();
+
+      // 4. 중앙 황금빛 하프(Harp) 악기 드로잉
+      const hcx = W / 2;
+      const hcy = 525;
+
+      // 하프 뒤쪽 환상적인 신비로운 후광 원형 오라
+      bctx.save();
+      const aura = bctx.createRadialGradient(hcx, hcy, 40, hcx, hcy, 290);
+      aura.addColorStop(0, 'rgba(251, 191, 36, 0.45)');
+      aura.addColorStop(0.4, 'rgba(56, 189, 248, 0.25)');
+      aura.addColorStop(0.75, 'rgba(147, 51, 234, 0.15)');
+      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      bctx.fillStyle = aura;
+      bctx.fillRect(hcx - 300, hcy - 300, 600, 600);
+
+      // 음파(Sound wave) 동심원 링
+      bctx.strokeStyle = 'rgba(254, 240, 138, 0.25)';
+      bctx.lineWidth = 1.5;
+      [110, 160, 215, 270].forEach(r => {
+        bctx.beginPath();
+        bctx.arc(hcx, hcy, r, 0, Math.PI * 2);
+        bctx.stroke();
+      });
+      bctx.restore();
+
+      // 하프 본체 (Pillar, Neck, Soundbox, Base)
+      bctx.save();
+      const harpGoldGrad = bctx.createLinearGradient(hcx - 120, hcy - 200, hcx + 120, hcy + 220);
+      harpGoldGrad.addColorStop(0, '#fef9c3');
+      harpGoldGrad.addColorStop(0.2, '#facc15');
+      harpGoldGrad.addColorStop(0.5, '#eab308');
+      harpGoldGrad.addColorStop(0.8, '#ca8a04');
+      harpGoldGrad.addColorStop(1, '#854d0e');
+
+      bctx.fillStyle = harpGoldGrad;
+      bctx.strokeStyle = '#fef08a';
+      bctx.lineWidth = 2.5;
+      bctx.shadowColor = 'rgba(250, 204, 21, 0.65)';
+      bctx.shadowBlur = 18;
+
+      // 1) 받침대
+      bctx.beginPath();
+      roundRect(bctx, hcx - 130, hcy + 185, 260, 26, 12);
+      bctx.fill();
+      bctx.stroke();
+
+      bctx.beginPath();
+      roundRect(bctx, hcx - 95, hcy + 172, 190, 16, 8);
+      bctx.fill();
+      bctx.stroke();
+
+      // 2) 앞쪽 기둥 (Forepillar)
+      bctx.beginPath();
+      bctx.moveTo(hcx - 95, hcy + 172);
+      bctx.bezierCurveTo(hcx - 110, hcy + 60, hcx - 125, hcy - 80, hcx - 85, hcy - 195);
+      bctx.bezierCurveTo(hcx - 70, hcy - 195, hcx - 60, hcy - 180, hcx - 72, hcy - 170);
+      bctx.bezierCurveTo(hcx - 100, hcy - 70, hcx - 90, hcy + 60, hcx - 75, hcy + 172);
+      bctx.closePath();
+      bctx.fill();
+      bctx.stroke();
+
+      // 3) 상단 우아한 나선형 곡선 넥 (Neck & Scroll)
+      bctx.beginPath();
+      bctx.moveTo(hcx - 85, hcy - 195);
+      bctx.bezierCurveTo(hcx - 40, hcy - 230, hcx + 20, hcy - 180, hcx + 65, hcy - 215);
+      bctx.bezierCurveTo(hcx + 95, hcy - 238, hcx + 125, hcy - 210, hcx + 105, hcy - 180);
+      bctx.bezierCurveTo(hcx + 85, hcy - 155, hcx + 35, hcy - 160, hcx - 10, hcy - 190);
+      bctx.bezierCurveTo(hcx - 45, hcy - 208, hcx - 70, hcy - 180, hcx - 85, hcy - 195);
+      bctx.closePath();
+      bctx.fill();
+      bctx.stroke();
+
+      // 4) 뒤쪽 사운드박스 (Resonator Body)
+      bctx.beginPath();
+      bctx.moveTo(hcx + 105, hcy - 180);
+      bctx.bezierCurveTo(hcx + 80, hcy - 50, hcx + 70, hcy + 70, hcx + 85, hcy + 172);
+      bctx.lineTo(hcx + 55, hcy + 172);
+      bctx.bezierCurveTo(hcx + 40, hcy + 60, hcx + 50, hcy - 60, hcx + 70, hcy - 175);
+      bctx.closePath();
+      bctx.fill();
+      bctx.stroke();
+      bctx.restore();
+
+      // 5) 빛나는 하프의 현 (7개의 영롱한 스트링)
+      bctx.save();
+      const stringData = [
+        { topX: hcx - 55, topY: hcy - 185, botX: hcx - 45, botY: hcy + 172, color: 'rgba(254, 240, 138, 0.95)', w: 2 },
+        { topX: hcx - 35, topY: hcy - 182, botX: hcx - 25, botY: hcy + 172, color: 'rgba(56, 189, 248, 0.9)', w: 1.8 },
+        { topX: hcx - 15, topY: hcy - 176, botX: hcx - 5, botY: hcy + 172, color: 'rgba(254, 240, 138, 0.95)', w: 2 },
+        { topX: hcx + 5, topY: hcy - 178, botX: hcx + 15, botY: hcy + 172, color: 'rgba(244, 114, 182, 0.9)', w: 1.8 },
+        { topX: hcx + 25, topY: hcy - 184, botX: hcx + 32, botY: hcy + 172, color: 'rgba(254, 240, 138, 0.95)', w: 2 },
+        { topX: hcx + 45, topY: hcy - 192, botX: hcx + 48, botY: hcy + 172, color: 'rgba(52, 211, 153, 0.9)', w: 1.8 },
+        { topX: hcx + 65, topY: hcy - 196, botX: hcx + 62, botY: hcy + 172, color: 'rgba(254, 240, 138, 0.95)', w: 2 }
+      ];
+
+      stringData.forEach((str, idx) => {
+        bctx.beginPath();
+        bctx.strokeStyle = str.color;
+        bctx.lineWidth = str.w;
+        bctx.shadowColor = str.color;
+        bctx.shadowBlur = 6;
+        bctx.moveTo(str.topX, str.topY);
+        bctx.lineTo(str.botX, str.botY);
+        bctx.stroke();
+
+        bctx.fillStyle = '#fef08a';
+        bctx.beginPath();
+        bctx.arc(str.topX, str.topY - 1, 3, 0, Math.PI * 2);
+        bctx.fill();
+
+        if (idx === 2 || idx === 4) {
+          const sparkY = hcy + (idx === 2 ? -20 : 35);
+          const sparkX = str.topX + (str.botX - str.topX) * ((sparkY - str.topY) / (str.botY - str.topY));
+          bctx.fillStyle = '#ffffff';
+          bctx.shadowColor = '#ffffff';
+          bctx.shadowBlur = 10;
+          bctx.beginPath();
+          bctx.arc(sparkX, sparkY, 3, 0, Math.PI * 2);
+          bctx.fill();
+        }
+      });
+      bctx.restore();
+
+      // 5. 하단 HARPMON 시그니처 로고
+      bctx.save();
+      bctx.textAlign = 'center';
+      bctx.font = '900 38px "Noto Sans KR", sans-serif';
+      bctx.fillStyle = '#ffffff';
+      bctx.shadowColor = 'rgba(254, 240, 138, 0.7)';
+      bctx.shadowBlur = 14;
+      bctx.fillText('HARPMON', W / 2, 936);
+
+      bctx.font = '700 12px "Noto Sans KR", sans-serif';
+      bctx.fillStyle = '#94a3b8';
+      bctx.shadowBlur = 0;
+      bctx.letterSpacing = '3px';
+      bctx.fillText('AUTHENTIC HARP COLLECTION', W / 2, 962);
+      bctx.restore();
+
+      const img = new Image();
+      img.src = bCanvas.toDataURL();
+      return img;
+    }
+
+    // TCG 홀로그램(Foil) 반사광 필터 렌더링
+    function drawHoloOverlay(ctx, x, y, width, height, type, intensityPercent = 65) {
+      if (type === 'none') return;
+      const alpha = (intensityPercent / 100) * 0.75;
+
+      ctx.save();
+      ctx.beginPath();
+      roundRect(ctx, x, y, width, height, 16);
+      ctx.clip();
+
+      if (type === 'cosmos') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha;
+        const grad = ctx.createLinearGradient(x, y, x + width, y + height);
+        grad.addColorStop(0, 'rgba(244, 114, 182, 0.7)');
+        grad.addColorStop(0.3, 'rgba(192, 132, 252, 0.5)');
+        grad.addColorStop(0.7, 'rgba(56, 189, 248, 0.6)');
+        grad.addColorStop(1, 'rgba(52, 211, 153, 0.7)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, width, height);
+
+        // 코스모스 링 및 버블
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        const bubbles = [
+          { cx: x + width * 0.25, cy: y + height * 0.3, r: 45 },
+          { cx: x + width * 0.7, cy: y + height * 0.4, r: 65 },
+          { cx: x + width * 0.4, cy: y + height * 0.75, r: 50 }
+        ];
+        bubbles.forEach(b => {
+          ctx.beginPath();
+          ctx.arc(b.cx, b.cy, b.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else if (type === 'diagonal') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha;
+        const grad = ctx.createLinearGradient(x, y, x + width, y + height);
+        grad.addColorStop(0, 'rgba(239, 68, 68, 0.6)');
+        grad.addColorStop(0.2, 'rgba(245, 158, 11, 0.6)');
+        grad.addColorStop(0.4, 'rgba(234, 179, 8, 0.6)');
+        grad.addColorStop(0.6, 'rgba(34, 197, 94, 0.6)');
+        grad.addColorStop(0.8, 'rgba(59, 130, 246, 0.6)');
+        grad.addColorStop(1, 'rgba(168, 85, 247, 0.6)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, width, height);
+
+        // 촘촘한 사선 빔
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.lineWidth = 14;
+        for (let i = -width; i < width * 2; i += 36) {
+          ctx.beginPath();
+          ctx.moveTo(x + i, y);
+          ctx.lineTo(x + i + height, y + height);
+          ctx.stroke();
+        }
+      } else if (type === 'starlight') {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = alpha;
+        const grad = ctx.createRadialGradient(x + width / 2, y + height / 2, 50, x + width / 2, y + height / 2, width);
+        grad.addColorStop(0, 'rgba(254, 240, 138, 0.8)');
+        grad.addColorStop(0.5, 'rgba(216, 180, 254, 0.5)');
+        grad.addColorStop(1, 'rgba(147, 197, 253, 0.4)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, width, height);
+
+        // 반짝이는 십자 별빛
+        const stars = [
+          { sx: x + width * 0.2, sy: y + height * 0.25, size: 16 },
+          { sx: x + width * 0.8, sy: y + height * 0.35, size: 22 },
+          { sx: x + width * 0.5, sy: y + height * 0.6, size: 26 },
+          { sx: x + width * 0.3, sy: y + height * 0.8, size: 18 }
+        ];
+        stars.forEach(st => {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.beginPath();
+          ctx.arc(st.sx, st.sy, 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(st.sx - st.size, st.sy);
+          ctx.lineTo(st.sx + st.size, st.sy);
+          ctx.moveTo(st.sx, st.sy - st.size);
+          ctx.lineTo(st.sx, st.sy + st.size);
+          ctx.stroke();
+        });
+      }
+
+      ctx.restore();
+    }
+
+    // 2mm 재단선 및 5mm 귀도리 정밀 가이드라인 오버레이
+    function drawCornerCutGuide(targetCtx, w, h) {
+      targetCtx.save();
+      const bleedCut = 12; // 2mm 도련/재단선 (750x1050 캔버스 기준 12px, 300 DPI 기준 24px)
+      const cornerR = 30;  // 5mm 귀도리 라운딩 반경 (300 DPI 기준 59px)
+      const safeMargin = bleedCut + 18; // 안전 작업 영역 (재단선 안쪽 3mm 보장 = 30px)
+
+      // 1. 안전 작업 영역 (초록색 점선)
+      targetCtx.strokeStyle = 'rgba(34, 197, 94, 0.9)';
+      targetCtx.lineWidth = 1.5;
+      targetCtx.setLineDash([4, 4]);
+      roundRect(targetCtx, safeMargin, safeMargin, w - safeMargin * 2, h - safeMargin * 2, Math.max(12, cornerR - 12));
+      targetCtx.stroke();
+
+      // 2. 2mm 도련선 바깥 직사각형 가이드 (파란색 실선/점선)
+      targetCtx.strokeStyle = 'rgba(59, 130, 246, 0.75)';
+      targetCtx.lineWidth = 1.5;
+      targetCtx.setLineDash([5, 5]);
+      targetCtx.strokeRect(bleedCut, bleedCut, w - bleedCut * 2, h - bleedCut * 2);
+
+      // 3. 2mm 재단선에 맞춘 5mm 귀도리 실제 커팅 최종 칼선 (빨간색 굵은선)
+      targetCtx.strokeStyle = 'rgba(239, 68, 68, 0.95)';
+      targetCtx.lineWidth = 2.5;
+      targetCtx.setLineDash([6, 3]);
+      roundRect(targetCtx, bleedCut, bleedCut, w - bleedCut * 2, h - bleedCut * 2, cornerR);
+      targetCtx.stroke();
+
+      // 4. 잘려나갈 모서리 영역 붉은 음영 마스킹 (반전 채우기)
+      targetCtx.save();
+      targetCtx.beginPath();
+      targetCtx.rect(0, 0, w, h);
+      // 내부 5mm 귀도리 패스 역방향 제거
+      roundRect(targetCtx, bleedCut, bleedCut, w - bleedCut * 2, h - bleedCut * 2, cornerR);
+      targetCtx.fillStyle = 'rgba(239, 68, 68, 0.18)';
+      targetCtx.fill('evenodd');
+      targetCtx.restore();
+
+      // 상단 인디케이터 배지
+      targetCtx.setLineDash([]);
+      targetCtx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+      roundRect(targetCtx, w / 2 - 145, 8, 290, 24, 6);
+      targetCtx.fill();
+
+      targetCtx.font = 'bold 11px "Noto Sans KR", sans-serif';
+      targetCtx.fillStyle = '#ffffff';
+      targetCtx.textAlign = 'center';
+      targetCtx.textBaseline = 'middle';
+      targetCtx.fillText('🔵 2mm 재단선 기준  🔴 5mm 귀도리 실칼선', w / 2, 20);
+
+      targetCtx.restore();
+    }
+
+    // 메인 카드 앞면 렌더링 함수
+    function drawCard() {
+      const W = canvas.width;  // 750
+      const H = canvas.height; // 1050
+
+      ctx.clearRect(0, 0, W, H);
+
+      const borderColor = borderColorInput.value || '#0284c7';
+      const margin = 36; // 2mm 재단선 + 5mm 귀도리 침범 범위(42px 대각선)를 안전하게 보호하는 마진
+      const innerW = W - margin * 2;
+      const innerH = H - margin * 2;
+      const innerRadius = 20;
+
+      // 1. 외곽 테두리
+      ctx.fillStyle = borderColor;
+      ctx.fillRect(0, 0, W, H);
+
+      // 테두리 내부 은은한 광원 라인 (2mm 재단선 안쪽 26px 위치에 안전 배치)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.lineWidth = 2.5;
+      roundRect(ctx, 26, 26, W - 52, H - 52, 22);
+      ctx.stroke();
+
+      // 2. 내부 본체 영역
+      ctx.save();
+      roundRect(ctx, margin, margin, innerW, innerH, innerRadius);
+      ctx.clip();
+
+      if (cardCategory === 'energy') {
+        // [에너지 카드]
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(margin, margin, innerW, innerH);
+
+        const typeSoftColors = {
+          madness: 'rgba(239, 68, 68, 0.75)',
+          depression: 'rgba(59, 130, 246, 0.75)',
+          purity: 'rgba(16, 185, 129, 0.75)'
+        };
+        const softBgColor = typeSoftColors[currentCardType] || 'rgba(59, 130, 246, 0.75)';
+
+        ctx.fillStyle = softBgColor;
+        ctx.fillRect(margin, margin, innerW, innerH);
+
+        const centerHighlight = ctx.createRadialGradient(W / 2, H / 2, 80, W / 2, H / 2, 360);
+        centerHighlight.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+        centerHighlight.addColorStop(0.5, 'rgba(255, 255, 255, 0.35)');
+        centerHighlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = centerHighlight;
+        ctx.fillRect(margin, margin, innerW, innerH);
+
+      } else if (cardArtType === 'full') {
+        // [풀아트 전면]
+        const scale = (parseInt(imgScaleInput.value, 10) || 100) / 100;
+        const offX = parseInt(imgOffsetXInput.value, 10) || 0;
+        const offY = parseInt(imgOffsetYInput.value, 10) || 0;
+
+        if (currentImage && currentImage.complete) {
+          drawImageCover(ctx, currentImage, margin, margin, innerW, innerH, scale, offX, offY);
+        } else {
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(margin, margin, innerW, innerH);
+        }
+
+        // 상하단 텍스트 가독성용 그라디언트
+        const topGrad = ctx.createLinearGradient(0, margin, 0, margin + 140);
+        topGrad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
+        topGrad.addColorStop(0.65, 'rgba(255, 255, 255, 0.35)');
+        topGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(margin, margin, innerW, 140);
+
+        const bottomGrad = ctx.createLinearGradient(0, H - margin - 440, 0, H - margin);
+        bottomGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        bottomGrad.addColorStop(0.4, 'rgba(255, 255, 255, 0.35)');
+        bottomGrad.addColorStop(1, 'rgba(255, 255, 255, 0.78)');
+        ctx.fillStyle = bottomGrad;
+        ctx.fillRect(margin, H - margin - 440, innerW, 440);
+
+      } else {
+        // [일반 중앙 프레임]
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        const baseColor = (cardBaseBgColorInput && cardBaseBgColorInput.value) || '#ffffff';
+        ctx.fillStyle = baseColor;
+        ctx.fillRect(margin, margin, innerW, innerH);
+
+        // 텍스처 합성
+        if (currentTextureImg && currentTextureImg.complete) {
+          ctx.save();
+          const opacity = (parseInt(textureOpacityInput.value, 10) || 50) / 100;
+          ctx.globalAlpha = opacity;
+          ctx.globalCompositeOperation = 'overlay';
+          drawImageCover(ctx, currentTextureImg, margin, margin, innerW, innerH);
+          ctx.restore();
+        }
+
+        const imgX = margin + 24;
+        const imgY = margin + 115;
+        const imgW = innerW - 48;
+        const imgH = 425;
+        const imgRadius = 14;
+
+        // 프레임 외곽 테두리
+        ctx.save();
+        roundRect(ctx, imgX - 6, imgY - 6, imgW + 12, imgH + 12, imgRadius + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fill();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        // 일러스트 마스킹 및 렌더링
+        ctx.save();
+        roundRect(ctx, imgX, imgY, imgW, imgH, imgRadius);
+        ctx.clip();
+
+        if (currentFrameBg && currentFrameBg.complete) {
+          drawImageCover(ctx, currentFrameBg, imgX, imgY, imgW, imgH);
+        } else {
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(imgX, imgY, imgW, imgH);
+        }
+
+        if (currentImage && currentImage.complete) {
+          const scale = (parseInt(imgScaleInput.value, 10) || 100) / 100;
+          const offX = parseInt(imgOffsetXInput.value, 10) || 0;
+          const offY = parseInt(imgOffsetYInput.value, 10) || 0;
+          drawImageCover(ctx, currentImage, imgX, imgY, imgW, imgH, scale, offX, offY);
+        }
+        ctx.restore();
+
+        ctx.save();
+        roundRect(ctx, imgX, imgY, imgW, imgH, imgRadius);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 홀로그램 반사광 오버레이 적용
+      if (currentHoloType !== 'none') {
+        const intensity = parseInt(holoIntensityInput.value, 10) || 65;
+        drawHoloOverlay(ctx, margin, margin, innerW, innerH, currentHoloType, intensity);
+      }
+
+      ctx.restore(); // 내부 본체 클리핑 복원
+
+      // 3. 헤더 섹션 (분류, 이름, ex, HP, 속성 심볼)
+      const contentMarginLeft = margin + 34;
+      const contentMarginRight = W - margin - 34;
+
+      const subValue = (cardSubInput.value || (cardCategory === 'trainer' ? '서포트' : '기본 하프몬')).trim();
+      ctx.fillStyle = cardArtType === 'full' ? '#334155' : '#64748b';
+      ctx.font = '700 20px "Noto Sans KR", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(subValue, contentMarginLeft, margin + 46);
+
+      const isEvolutionStage = cardCategory === 'albbamon' && (subValue.includes('1진화') || subValue.includes('2진화'));
+      if (isEvolutionStage) {
+        const evoFromName = (preEvoNameInput.value || '').trim();
+        if (evoFromName) {
+          const subTextWidth = ctx.measureText(subValue).width;
+          const evoText = ` - ${evoFromName}에서 진화`;
+          ctx.save();
+          ctx.font = '500 16px "Noto Sans KR", sans-serif';
+          ctx.fillStyle = cardArtType === 'full' ? '#475569' : '#64748b';
+          ctx.fillText(evoText, contentMarginLeft + subTextWidth + 4, margin + 46);
+          ctx.restore();
+        }
+      }
+
+      // 카드 이름 및 레이아웃
+      ctx.fillStyle = '#0f172a';
+      const baseCardName = (cardNameInput.value || (cardCategory === 'trainer' ? '박사의 연구' : (cardCategory === 'energy' ? '기본 에너지' : '이부리'))).trim();
+
+      let nameRightBound = contentMarginRight;
+      const hpValue = (cardHpInput.value || '').trim();
+      const hasType = (cardCategory === 'albbamon') && TYPE_DATA[currentCardType];
+
+      if (cardCategory !== 'energy') {
+        if (hasType) nameRightBound -= (48 + 14);
+        if (hpValue) {
+          ctx.font = '900 38px "Gowun Dodum", "Noto Sans KR", sans-serif';
+          const hpWidth = ctx.measureText(hpValue).width;
+          ctx.font = '800 20px "Noto Sans KR", sans-serif';
+          const hpLabelWidth = ctx.measureText('HP').width;
+          nameRightBound -= (hpWidth + hpLabelWidth + 18);
+        }
+      }
+
+      const isExActive = isExCardInput.checked && cardCategory !== 'energy';
+      const exReservedWidth = isExActive ? 65 : 0;
+      const availableNameWidth = Math.max(120, nameRightBound - contentMarginLeft - exReservedWidth);
+
+      const isTrainerPrefixed = (cardCategory === 'albbamon' && isTrainerAlbbamonInput.checked);
+      const tName = (trainerPrefixInput.value || '지우').trim();
+      const prefixText = isTrainerPrefixed ? `${tName}의 ` : '';
+
+      let renderedLines = [];
+      let usedNameFontSize = 40;
+      let usedLineHeight = 44;
+      let isMultiLineName = false;
+      let maxLineWidth = 0;
+
+      let singleLineFound = false;
+      for (let size = 42; size >= 30; size -= 2) {
+        ctx.font = `700 ${Math.min(24, Math.max(16, size * 0.65))}px "Gowun Dodum", "Noto Sans KR", sans-serif`;
+        const pWidth = isTrainerPrefixed ? ctx.measureText(prefixText).width : 0;
+        ctx.font = `900 ${size}px "Gowun Dodum", "Noto Sans KR", sans-serif`;
+        const nWidth = ctx.measureText(baseCardName).width;
+
+        if (pWidth + nWidth <= availableNameWidth) {
+          singleLineFound = true;
+          usedNameFontSize = size;
+          usedLineHeight = size * 1.1;
+          renderedLines = [{ text: isTrainerPrefixed ? `${prefixText}${baseCardName}` : baseCardName, prefix: isTrainerPrefixed ? prefixText : '', main: baseCardName }];
+          maxLineWidth = pWidth + nWidth;
+          break;
+        }
+      }
+
+      if (!singleLineFound) {
+        isMultiLineName = true;
+        const fullTitle = isTrainerPrefixed ? `${prefixText}${baseCardName}` : baseCardName;
+        const words = fullTitle.split('');
+
+        for (let size = 26; size >= 18; size -= 1) {
+          ctx.font = `900 ${size}px "Gowun Dodum", "Noto Sans KR", sans-serif`;
+          const lines = [];
+          let curLine = '';
+
+          for (let i = 0; i < words.length; i++) {
+            const test = curLine + words[i];
+            if (ctx.measureText(test).width <= availableNameWidth) {
+              curLine = test;
+            } else {
+              if (curLine) lines.push(curLine);
+              curLine = words[i];
+            }
+          }
+          if (curLine) lines.push(curLine);
+
+          if (lines.length <= 2 || size === 18) {
+            usedNameFontSize = size;
+            usedLineHeight = size * 1.18;
+            renderedLines = lines.map(l => ({ text: l, prefix: '', main: l }));
+            lines.forEach(l => {
+              const w = ctx.measureText(l).width;
+              if (w > maxLineWidth) maxLineWidth = w;
+            });
+            break;
+          }
+        }
+      }
+
+      const totalNameHeight = renderedLines.length * usedLineHeight;
+      const startNameY = (margin + 80) - (totalNameHeight / 2) + (usedNameFontSize * 0.82);
+
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+
+      renderedLines.forEach((lineObj, idx) => {
+        const curY = startNameY + (idx * usedLineHeight);
+        if (!isMultiLineName && lineObj.prefix) {
+          ctx.font = `700 ${Math.min(24, Math.max(16, usedNameFontSize * 0.65))}px "Gowun Dodum", "Noto Sans KR", sans-serif`;
+          ctx.fillStyle = '#0f172a';
+          ctx.fillText(lineObj.prefix, contentMarginLeft, curY);
+          const pW = ctx.measureText(lineObj.prefix).width;
+          ctx.font = `900 ${usedNameFontSize}px "Gowun Dodum", "Noto Sans KR", sans-serif`;
+          ctx.fillText(lineObj.main, contentMarginLeft + pW, curY);
+        } else {
+          ctx.font = `900 ${usedNameFontSize}px "Gowun Dodum", "Noto Sans KR", sans-serif`;
+          ctx.fillStyle = '#0f172a';
+          ctx.fillText(lineObj.text, contentMarginLeft, curY);
+        }
+      });
+
+      // ex 마크
+      if (isExActive) {
+        ctx.save();
+        const exFontSize = isMultiLineName ? 38 : Math.max(34, Math.round(usedNameFontSize * 0.95));
+        const exTextX = contentMarginLeft + maxLineWidth + 12;
+        const exTextY = isMultiLineName ? (margin + 80) + (exFontSize * 0.35) : startNameY;
+
+        ctx.font = `italic 900 ${exFontSize}px "Noto Sans KR", sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = Math.max(4, exFontSize * 0.16);
+        ctx.lineJoin = 'round';
+        ctx.strokeText('ex', exTextX, exTextY);
+
+        const silverGrad = ctx.createLinearGradient(exTextX, exTextY - exFontSize * 0.85, exTextX, exTextY);
+        silverGrad.addColorStop(0, '#ffffff');
+        silverGrad.addColorStop(0.25, '#f1f5f9');
+        silverGrad.addColorStop(0.55, '#cbd5e1');
+        silverGrad.addColorStop(1, '#64748b');
+
+        ctx.fillStyle = silverGrad;
+        ctx.fillText('ex', exTextX, exTextY);
+        ctx.restore();
+      }
+
+      // HP & 타입 심볼
+      if (cardCategory !== 'energy') {
+        const topHeaderY = margin + 92;
+        let rightCursorX = contentMarginRight;
+
+        if (hasType) {
+          const typeInfo = TYPE_DATA[currentCardType];
+          const badgeRadius = 24;
+          const badgeCenterX = rightCursorX - badgeRadius + 12;
+          const badgeCenterY = topHeaderY - 14;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(badgeCenterX, badgeCenterY, badgeRadius, 0, Math.PI * 2);
+          ctx.fillStyle = typeInfo.bgColor;
+          ctx.fill();
+
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+
+          ctx.font = '24px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(typeInfo.icon, badgeCenterX, badgeCenterY + 2);
+          ctx.restore();
+
+          rightCursorX = badgeCenterX - badgeRadius - 10;
+        }
+
+        if (hpValue) {
+          ctx.save();
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillStyle = '#0f172a';
+
+          ctx.font = '900 38px "Gowun Dodum", "Noto Sans KR", sans-serif';
+          ctx.fillText(hpValue, rightCursorX, topHeaderY);
+
+          const hpNumWidth = ctx.measureText(hpValue).width;
+          const hpLabelX = rightCursorX - hpNumWidth - 6;
+
+          ctx.font = '800 20px "Noto Sans KR", sans-serif';
+          ctx.fillText('HP', hpLabelX, topHeaderY);
+          ctx.restore();
+        }
+      }
+
+      // 4. 기술 및 본문 섹션
+      const attackStartY = margin + 115 + 430 + 55;
+      const attackBoxMargin = margin + 28;
+      const attackBoxWidth = W - attackBoxMargin * 2;
+      const attackTextLeft = attackBoxMargin + 18;
+      const attackTextRight = W - attackBoxMargin - 18;
+      const attackDescWidth = attackBoxWidth - 36;
+
+      if (cardCategory === 'energy') {
+        const typeInfo = TYPE_DATA[currentCardType] || TYPE_DATA.depression;
+        const centerX = W / 2;
+        const centerY = H / 2;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 185, 0, Math.PI * 2);
+        ctx.strokeStyle = typeInfo.glowColor;
+        ctx.lineWidth = 6;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 160, 0, Math.PI * 2);
+        ctx.fillStyle = typeInfo.bgColor;
+        ctx.fill();
+        ctx.lineWidth = 14;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '150px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
+        ctx.fillText(typeInfo.icon, centerX, centerY + 10);
+        ctx.restore();
+
+      } else if (cardCategory === 'trainer') {
+        const trainerBoxHeight = 180;
+        if (cardArtType === 'full') {
+          ctx.save();
+          roundRect(ctx, attackBoxMargin, attackStartY - 24, attackBoxWidth, trainerBoxHeight, 18);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '500 20px "Noto Sans KR", sans-serif';
+        wrapMultilineText(ctx, trainerDescInput.value || '', attackTextLeft, attackStartY + 14, attackDescWidth, 32, 5);
+
+      } else {
+        if (cardArtType === 'full') {
+          ctx.save();
+          roundRect(ctx, attackBoxMargin, attackStartY - 24, attackBoxWidth, 215, 18);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // --- MOVE 1 ---
+        const m1Y = attackStartY;
+        const m1Cost = (move1CostInput.value || '').trim();
+        const m1Name = move1NameInput.value || '';
+        const isAbility = isMove1AbilityInput && isMove1AbilityInput.checked;
+
+        ctx.textAlign = 'left';
+
+        if (isAbility) {
+          const badgeWidth = 88;
+          const badgeHeight = 27;
+          const badgeX = attackTextLeft;
+          const badgeY = m1Y - 1;
+
+          ctx.save();
+          roundRect(ctx, badgeX, badgeY, badgeWidth, badgeHeight, 6);
+          ctx.fillStyle = '#dc2626';
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'italic 900 18px "Noto Sans KR", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('특성', badgeX + badgeWidth / 2 - 2, badgeY + badgeHeight / 2 + 1);
+          ctx.restore();
+
+          ctx.fillStyle = '#dc2626';
+          ctx.font = '800 28px "Gowun Dodum", "Noto Sans KR", sans-serif';
+          ctx.fillText(m1Name, attackTextLeft + 105, m1Y + 22);
+        } else {
+          if (m1Cost) {
+            ctx.fillStyle = '#0f172a';
+            ctx.font = '700 24px "Noto Sans KR", sans-serif';
+            ctx.fillText(m1Cost, attackTextLeft, m1Y + 22);
+
+            ctx.font = '800 28px "Gowun Dodum", "Noto Sans KR", sans-serif';
+            ctx.fillText(m1Name, attackTextLeft + 105, m1Y + 22);
+          } else {
+            ctx.fillStyle = '#0f172a';
+            ctx.font = '800 28px "Gowun Dodum", "Noto Sans KR", sans-serif';
+            ctx.fillText(m1Name, attackTextLeft, m1Y + 22);
+          }
+
+          ctx.textAlign = 'right';
+          ctx.font = '900 34px "Gowun Dodum", "Noto Sans KR", sans-serif';
+          ctx.fillText(move1DmgInput.value || '', attackTextRight, m1Y + 24);
+        }
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#334155';
+        ctx.font = '500 17px "Noto Sans KR", sans-serif';
+        wrapText(ctx, move1DescInput.value || '', attackTextLeft, m1Y + 54, attackDescWidth, 23, 2);
+
+        ctx.strokeStyle = cardArtType === 'full' ? 'rgba(148, 163, 184, 0.5)' : '#e2e8f0';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(attackBoxMargin + 10, attackStartY + 95);
+        ctx.lineTo(W - attackBoxMargin - 10, attackStartY + 95);
+        ctx.stroke();
+
+        // --- MOVE 2 ---
+        const m2Y = attackStartY + 118;
+        const m2Cost = (move2CostInput.value || '').trim();
+        const m2Name = move2NameInput.value || '';
+
+        ctx.textAlign = 'left';
+        if (m2Cost) {
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '700 24px "Noto Sans KR", sans-serif';
+          ctx.fillText(m2Cost, attackTextLeft, m2Y + 22);
+
+          ctx.font = '800 28px "Gowun Dodum", "Noto Sans KR", sans-serif';
+          ctx.fillText(m2Name, attackTextLeft + 105, m2Y + 22);
+        } else {
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '800 28px "Gowun Dodum", "Noto Sans KR", sans-serif';
+          ctx.fillText(m2Name, attackTextLeft, m2Y + 22);
+        }
+
+        ctx.textAlign = 'right';
+        ctx.font = '900 34px "Gowun Dodum", "Noto Sans KR", sans-serif';
+        ctx.fillText(move2DmgInput.value || '', attackTextRight, m2Y + 24);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#334155';
+        ctx.font = '500 17px "Noto Sans KR", sans-serif';
+        wrapText(ctx, move2DescInput.value || '', attackTextLeft, m2Y + 54, attackDescWidth, 23, 2);
+      }
+
+      // 5. 하단 상태 바 (하프몬 전용)
+      if (cardCategory === 'albbamon') {
+        const statusBoxY = H - margin - 112;
+        const statusMargin = margin + 34;
+        const statusBoxWidth = W - statusMargin * 2;
+        const colWidth = statusBoxWidth / 3;
+
+        ctx.fillStyle = cardArtType === 'full' ? 'rgba(255, 255, 255, 0.75)' : '#f8fafc';
+        ctx.strokeStyle = cardArtType === 'full' ? 'rgba(255, 255, 255, 0.85)' : '#cbd5e1';
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, statusMargin, statusBoxY - 8, statusBoxWidth, 52, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '700 13px "Noto Sans KR", sans-serif';
+        ctx.textAlign = 'center';
+        const col1X = statusMargin + colWidth * 0.5;
+        ctx.fillText('약점', col1X, statusBoxY + 12);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '800 17px "Noto Sans KR", sans-serif';
+        ctx.fillText(weaknessInput.value || '없음', col1X, statusBoxY + 33);
+
+        const col2X = statusMargin + colWidth * 1.5;
+        ctx.fillStyle = '#64748b';
+        ctx.font = '700 13px "Noto Sans KR", sans-serif';
+        ctx.fillText('저항력', col2X, statusBoxY + 12);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '800 17px "Noto Sans KR", sans-serif';
+        ctx.fillText(resistanceInput.value || '없음', col2X, statusBoxY + 33);
+
+        const col3X = statusMargin + colWidth * 2.5;
+        ctx.fillStyle = '#64748b';
+        ctx.font = '700 13px "Noto Sans KR", sans-serif';
+        ctx.fillText('후퇴', col3X, statusBoxY + 12);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '800 17px "Noto Sans KR", sans-serif';
+        ctx.fillText(retreatInput.value || '★', col3X, statusBoxY + 33);
+
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(statusMargin + colWidth, statusBoxY - 2);
+        ctx.lineTo(statusMargin + colWidth, statusBoxY + 38);
+        ctx.moveTo(statusMargin + colWidth * 2, statusBoxY - 2);
+        ctx.lineTo(statusMargin + colWidth * 2, statusBoxY + 38);
+        ctx.stroke();
+      }
+
+      // 6. 메타 정보 & 도감 설명
+      if (cardCategory !== 'energy') {
+        ctx.fillStyle = cardArtType === 'full' ? '#475569' : '#94a3b8';
+        ctx.textAlign = 'left';
+        ctx.font = '700 15px "Noto Sans KR", sans-serif';
+        const illuText = (illustratorInput.value || '').trim();
+        if (illuText) {
+          ctx.fillText(illuText, contentMarginLeft, H - margin - 36);
+        }
+
+        let currentBottomX = contentMarginLeft;
+        const bottomLineY = H - margin - 12;
+
+        const regText = (regulationMarkInput.value || '').trim().toUpperCase();
+        if (regText) {
+          ctx.save();
+          const boxSize = 18;
+          const boxY = bottomLineY - 14;
+          
+          ctx.fillStyle = cardArtType === 'full' ? 'rgba(255, 255, 255, 0.85)' : '#ffffff';
+          ctx.strokeStyle = cardArtType === 'full' ? '#334155' : '#64748b';
+          ctx.lineWidth = 1.4;
+          roundRect(ctx, currentBottomX, boxY, boxSize, boxSize, 3);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '900 13px "Noto Sans KR", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(regText, currentBottomX + boxSize / 2, boxY + 14);
+          ctx.restore();
+
+          currentBottomX += boxSize + 8;
+        }
+
+        const packText = (setCardPackInput.value || '').trim().toUpperCase();
+        if (packText) {
+          ctx.fillStyle = cardArtType === 'full' ? '#1e293b' : '#475569';
+          ctx.font = '800 14px "Noto Sans KR", sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(packText, currentBottomX, bottomLineY);
+          currentBottomX += ctx.measureText(packText).width + 10;
+        }
+
+        const colText = (collectionNumInput.value || '').trim();
+        if (colText) {
+          ctx.font = '700 14px "Noto Sans KR", sans-serif';
+          ctx.fillStyle = cardArtType === 'full' ? '#475569' : '#64748b';
+          ctx.fillText(colText, currentBottomX, bottomLineY);
+          currentBottomX += ctx.measureText(colText).width + 6;
+        }
+
+        const rarityText = (cardRarityInput.value || '').trim();
+        if (rarityText) {
+          ctx.save();
+          ctx.font = '900 14px "Noto Sans KR", sans-serif';
+          ctx.fillStyle = cardArtType === 'full' ? '#0f172a' : '#1e293b';
+          ctx.fillText(rarityText, currentBottomX, bottomLineY);
+          ctx.restore();
+        }
+
+        const flavorText = (flavorTextInput.value || '').trim();
+        if (flavorText) {
+          ctx.save();
+          const flavorBoxLeft = W / 2 + 10;
+          const flavorBoxWidth = contentMarginRight - flavorBoxLeft;
+          const flavorBoxHeight = 44;
+          const flavorBoxY = H - margin - 58;
+
+          roundRect(ctx, flavorBoxLeft, flavorBoxY, flavorBoxWidth, flavorBoxHeight, 8);
+          ctx.fillStyle = cardArtType === 'full' ? 'rgba(255, 255, 255, 0.72)' : '#f8fafc';
+          ctx.fill();
+          ctx.strokeStyle = cardArtType === 'full' ? 'rgba(255, 255, 255, 0.85)' : '#e2e8f0';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          ctx.fillStyle = cardArtType === 'full' ? '#1e293b' : '#475569';
+          ctx.textAlign = 'left';
+          ctx.font = 'italic 500 11.5px "Noto Sans KR", sans-serif';
+          wrapText(ctx, flavorText, flavorBoxLeft + 8, flavorBoxY + 16, flavorBoxWidth - 16, 14, 2);
+          ctx.restore();
+        }
+      }
+
+      // 저작권 표기 (2mm 재단선 및 안전 마진을 고려하여 H - 24로 상향 배치)
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.font = '800 13px "Noto Sans KR", sans-serif';
+      ctx.fillText('TEAM HANRYANG © 2026', W / 2, H - 24);
+      ctx.restore();
+
+      // [5mm 귀도리 & 2mm 재단 가이드라인 오버레이]
+      if (showBleedGuideInput && showBleedGuideInput.checked) {
+        drawCornerCutGuide(ctx, W, H);
+      }
+    }
+
+    // 카드 뒷면 렌더링 함수
+    function drawCardBack() {
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.clearRect(0, 0, W, H);
+
+      if (currentBackImage && currentBackImage.complete) {
+        drawImageCover(ctx, currentBackImage, 0, 0, W, H);
+        if (showBleedGuideInput && showBleedGuideInput.checked) {
+          drawCornerCutGuide(ctx, W, H);
+        }
+        return;
+      }
+
+      const defaultBack = createDefaultBackArtwork();
+      if (defaultBack.complete) {
+        ctx.drawImage(defaultBack, 0, 0, W, H);
+        if (showBleedGuideInput && showBleedGuideInput.checked) {
+          drawCornerCutGuide(ctx, W, H);
+        }
+      } else {
+        defaultBack.onload = () => {
+          ctx.drawImage(defaultBack, 0, 0, W, H);
+          if (showBleedGuideInput && showBleedGuideInput.checked) {
+            drawCornerCutGuide(ctx, W, H);
+          }
+        };
+      }
+    }
+
+    // View Switching
+    function setCardSide(side) {
+      currentCardSide = side;
+      if (side === 'front') {
+        viewFrontBtn.className = 'px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-sm transition';
+        viewBackBtn.className = 'px-2.5 py-1 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition';
+        canvasSideIndicator.textContent = '● 현재 보기: 앞면';
+        drawCard();
+      } else {
+        viewBackBtn.className = 'px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-sm transition';
+        viewFrontBtn.className = 'px-2.5 py-1 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition';
+        canvasSideIndicator.textContent = '● 현재 보기: 뒷면';
+        drawCardBack();
+      }
+    }
+
+    viewFrontBtn.addEventListener('click', () => setCardSide('front'));
+    viewBackBtn.addEventListener('click', () => setCardSide('back'));
+    flipCardBtn.addEventListener('click', () => {
+      setCardSide(currentCardSide === 'front' ? 'back' : 'front');
+    });
+
+    if (showBleedGuideInput) {
+      showBleedGuideInput.addEventListener('change', () => {
+        if (currentCardSide === 'front') drawCard();
+        else drawCardBack();
+      });
+    }
+
+    // Art Type switch
+    function setArtType(type) {
+      cardArtType = type;
+      if (type === 'standard') {
+        artTypeStandardBtn.className = 'art-type-btn flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm bg-white text-slate-900 border border-slate-200';
+        artTypeFullBtn.className = 'art-type-btn flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
+        if (frameBgWrapper) frameBgWrapper.classList.remove('hidden');
+      } else {
+        artTypeFullBtn.className = 'art-type-btn flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm bg-amber-500 text-white font-extrabold shadow-amber-200';
+        artTypeStandardBtn.className = 'art-type-btn flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
+        if (frameBgWrapper) frameBgWrapper.classList.add('hidden');
+      }
+      drawCard();
+    }
+
+    artTypeStandardBtn.addEventListener('click', () => setArtType('standard'));
+    artTypeFullBtn.addEventListener('click', () => setArtType('full'));
+
+    // 하프몬 진화 단계 버튼
+    function updateStageButtonStyles(selectedStage) {
+      stageBtns.forEach(btn => {
+        if (btn.getAttribute('data-stage') === selectedStage) {
+          btn.className = 'stage-btn py-2 px-3 rounded-lg text-xs font-extrabold transition-all border border-blue-500 bg-blue-50 text-blue-700 shadow-sm flex items-center justify-center gap-1.5';
+          const icon = btn.querySelector('span');
+          if (icon) icon.className = 'text-blue-500';
+        } else {
+          btn.className = 'stage-btn py-2 px-3 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1.5';
+          const icon = btn.querySelector('span');
+          if (icon) icon.className = 'text-slate-400';
+        }
+      });
+      if (cardCategory === 'albbamon' && (selectedStage.includes('1진화') || selectedStage.includes('2진화'))) {
+        preEvoWrapper.classList.remove('hidden');
+      } else {
+        preEvoWrapper.classList.add('hidden');
+      }
+    }
+
+    stageBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const stage = this.getAttribute('data-stage');
+        cardSubInput.value = stage;
+        updateStageButtonStyles(stage);
+        drawCard();
+      });
+    });
+
+    // 트레이너스 버튼
+    function updateTrainerButtonStyles(selectedType) {
+      trainerTypeBtns.forEach(btn => {
+        if (btn.getAttribute('data-trainer-type') === selectedType) {
+          btn.className = 'trainer-type-btn py-2 px-2.5 rounded-lg text-xs font-extrabold transition-all border border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm flex items-center justify-center gap-1';
+        } else {
+          btn.className = 'trainer-type-btn py-2 px-2.5 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1';
+        }
+      });
+    }
+
+    trainerTypeBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const type = this.getAttribute('data-trainer-type');
+        cardSubInput.value = type;
+        updateTrainerButtonStyles(type);
+        drawCard();
+      });
+    });
+
+    // 카드 종류 탭 전환
+    function setCardCategory(cat) {
+      cardCategory = cat;
+      const baseBtnClass = 'card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60';
+
+      cardCategoryAlbbamonBtn.className = baseBtnClass;
+      cardCategoryTrainerBtn.className = baseBtnClass;
+      cardCategoryEnergyBtn.className = baseBtnClass;
+
+      if (cat === 'albbamon') {
+        cardCategoryAlbbamonBtn.className = 'card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all shadow-sm bg-white text-blue-600 border border-slate-200/80 hover:shadow';
+        
+        trainerAlbbamonLabel.classList.remove('hidden');
+        cardHpInput.parentElement.classList.remove('hidden');
+        albbamonTypeSelector.classList.remove('hidden');
+        albbamonStageButtons.classList.remove('hidden');
+        trainerStageButtons.classList.add('hidden');
+
+        illustrationSettingsSection.classList.remove('hidden');
+        albbamonMovesContainer.classList.remove('hidden');
+        trainerTextContainer.classList.add('hidden');
+
+        statusInputGrid.classList.remove('hidden');
+        bottomMetaWrapper.classList.remove('hidden');
+        trainerNotice.classList.add('hidden');
+
+        cardSubInput.value = '기본 하프몬';
+        updateStageButtonStyles('기본 하프몬');
+      } else if (cat === 'trainer') {
+        cardCategoryTrainerBtn.className = 'card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all shadow-sm bg-emerald-600 text-white shadow-emerald-200';
+        
+        trainerAlbbamonLabel.classList.add('hidden');
+        trainerNameWrapper.classList.add('hidden');
+        cardHpInput.parentElement.classList.remove('hidden');
+        albbamonTypeSelector.classList.add('hidden');
+        albbamonStageButtons.classList.add('hidden');
+        trainerStageButtons.classList.remove('hidden');
+
+        illustrationSettingsSection.classList.remove('hidden');
+        albbamonMovesContainer.classList.add('hidden');
+        trainerTextContainer.classList.remove('hidden');
+
+        statusInputGrid.classList.add('hidden');
+        bottomMetaWrapper.classList.remove('hidden');
+        trainerNotice.classList.remove('hidden');
+        trainerNotice.textContent = '※ 트레이너스 카드 선택 시 약점 / 저항력 / 후퇴 영역은 카드에 표시되지 않습니다.';
+
+        cardSubInput.value = '서포트';
+        updateTrainerButtonStyles('서포트');
+        preEvoWrapper.classList.add('hidden');
+      } else if (cat === 'energy') {
+        cardCategoryEnergyBtn.className = 'card-category-btn flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all shadow-sm bg-amber-500 text-white shadow-amber-200';
+
+        trainerAlbbamonLabel.classList.add('hidden');
+        trainerNameWrapper.classList.add('hidden');
+        cardHpInput.parentElement.classList.add('hidden');
+        albbamonTypeSelector.classList.remove('hidden');
+        albbamonStageButtons.classList.add('hidden');
+        trainerStageButtons.classList.add('hidden');
+
+        illustrationSettingsSection.classList.add('hidden');
+        albbamonMovesContainer.classList.add('hidden');
+        trainerTextContainer.classList.add('hidden');
+
+        statusInputGrid.classList.add('hidden');
+        bottomMetaWrapper.classList.add('hidden');
+        trainerNotice.classList.remove('hidden');
+        trainerNotice.textContent = '※ 기본 에너지 카드는 중앙에 전용 에너지 심볼 엠블럼이 표시됩니다.';
+
+        cardSubInput.value = '기본 에너지';
+        cardNameInput.value = '기본 에너지';
+        preEvoWrapper.classList.add('hidden');
+      }
+      drawCard();
+    }
+
+    cardCategoryAlbbamonBtn.addEventListener('click', () => setCardCategory('albbamon'));
+    cardCategoryTrainerBtn.addEventListener('click', () => setCardCategory('trainer'));
+    cardCategoryEnergyBtn.addEventListener('click', () => setCardCategory('energy'));
+
+    // 속성 타입 버튼 리스너
+    function updateTypeButtonStyles(selectedType) {
+      const typeBtns = document.querySelectorAll('.type-btn');
+      typeBtns.forEach(btn => {
+        const typeKey = btn.getAttribute('data-type');
+        if (typeKey === selectedType) {
+          if (typeKey === 'madness') {
+            btn.className = 'type-btn py-2 px-3 rounded-lg text-xs font-black transition-all border border-red-500 bg-red-50 text-red-600 shadow-sm flex items-center justify-center gap-1.5';
+          } else if (typeKey === 'depression') {
+            btn.className = 'type-btn py-2 px-3 rounded-lg text-xs font-black transition-all border border-blue-500 bg-blue-50 text-blue-600 shadow-sm flex items-center justify-center gap-1.5';
+          } else if (typeKey === 'purity') {
+            btn.className = 'type-btn py-2 px-3 rounded-lg text-xs font-black transition-all border border-emerald-500 bg-emerald-50 text-emerald-600 shadow-sm flex items-center justify-center gap-1.5';
+          }
+        } else {
+          btn.className = 'type-btn py-2 px-3 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white hover:text-slate-900 flex items-center justify-center gap-1.5';
+        }
+      });
+    }
+
+    document.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        currentCardType = this.getAttribute('data-type');
+        updateTypeButtonStyles(currentCardType);
+        if (currentCardSide === 'front') drawCard();
+      });
+    });
+
+    // 홀로그램 필터 버튼 리스너
+    holoTypeBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        currentHoloType = this.getAttribute('data-holo');
+        holoTypeBtns.forEach(b => {
+          if (b === this) {
+            b.className = 'holo-type-btn py-2 px-2.5 rounded-lg text-xs font-extrabold border border-amber-500 bg-amber-50 text-amber-800 shadow-sm transition';
+          } else {
+            b.className = 'holo-type-btn py-2 px-2.5 rounded-lg text-xs font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white transition';
+          }
+        });
+        if (currentCardSide === 'front') drawCard();
+      });
+    });
+
+    if (holoIntensityInput) {
+      holoIntensityInput.addEventListener('input', function() {
+        if (holoIntensityDisplay) holoIntensityDisplay.textContent = `${this.value}%`;
+        if (currentCardSide === 'front') drawCard();
+      });
+    }
+
+    // 트레이너의 하프몬 토글
+    isTrainerAlbbamonInput.addEventListener('change', function() {
+      if (this.checked) {
+        trainerNameWrapper.classList.remove('hidden');
+      } else {
+        trainerNameWrapper.classList.add('hidden');
+      }
+      drawCard();
+    });
+
+    trainerPrefixInput.addEventListener('input', drawCard);
+    preEvoNameInput.addEventListener('input', drawCard);
+
+    // 색상 프리셋
+    colorPresetBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        borderColorInput.value = this.getAttribute('data-color');
+        if (currentCardSide === 'front') drawCard();
+        else setCardSide('front');
+      });
+    });
+
+    bodyColorPresetBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (cardBaseBgColorInput) {
+          cardBaseBgColorInput.value = this.getAttribute('data-body-color');
+          if (currentCardSide === 'front') drawCard();
+        }
+      });
+    });
+
+    if (cardBaseBgColorInput) {
+      cardBaseBgColorInput.addEventListener('input', () => {
+        if (currentCardSide === 'front') drawCard();
+      });
+    }
+
+    // 텍스처 파일 업로드
+    if (textureUploadInput) {
+      textureUploadInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+              currentTextureImg = img;
+              if (textureStatusLabel) {
+                textureStatusLabel.textContent = file.name.length > 14 ? file.name.substring(0, 12) + '...' : file.name;
+                textureStatusLabel.className = 'text-[11px] text-indigo-600 font-bold';
+              }
+              if (currentCardSide === 'front') drawCard();
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    if (textureOpacityInput) {
+      textureOpacityInput.addEventListener('input', function() {
+        if (textureOpacityDisplay) textureOpacityDisplay.textContent = `${this.value}%`;
+        if (currentCardSide === 'front') drawCard();
+      });
+    }
+
+    if (resetTextureBtn) {
+      resetTextureBtn.addEventListener('click', () => {
+        textureUploadInput.value = '';
+        currentTextureImg = null;
+        if (textureStatusLabel) {
+          textureStatusLabel.textContent = '선택된 텍스처 없음';
+          textureStatusLabel.className = 'text-[11px] text-slate-400 font-medium';
+        }
+        if (currentCardSide === 'front') drawCard();
+      });
+    }
+
+    // 앞면 이미지 업로드
+    imageUploadInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            currentImage = img;
+            isDefaultImage = false;
+            drawCard();
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 중앙 프레임 배경 업로드
+    frameBgUploadInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            currentFrameBg = img;
+            if (isDefaultImage) {
+              currentImage = createDefaultArtwork(false);
+              currentImage.onload = () => {
+                if (currentCardSide === 'front') drawCard();
+              };
+            }
+            if (currentCardSide === 'front') drawCard();
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    resetFrameBgBtn.addEventListener('click', function() {
+      frameBgUploadInput.value = '';
+      currentFrameBg = null;
+      if (isDefaultImage) {
+        currentImage = createDefaultArtwork(true);
+        currentImage.onload = () => {
+          if (currentCardSide === 'front') drawCard();
+        };
+      }
+      if (currentCardSide === 'front') drawCard();
+    });
+
+    resetImageBtn.addEventListener('click', function() {
+      imageUploadInput.value = '';
+      currentImage = createDefaultArtwork(!currentFrameBg);
+      isDefaultImage = true;
+      currentImage.onload = () => {
+        if (currentCardSide === 'front') drawCard();
+      };
+      if (currentCardSide === 'front') drawCard();
+    });
+
+    // 뒷면 이미지 업로드
+    backImageUploadInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            currentBackImage = img;
+            setCardSide('back');
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    resetBackImageBtn.addEventListener('click', function() {
+      backImageUploadInput.value = '';
+      currentBackImage = null;
+      setCardSide('back');
+    });
+
+    // Pan & Zoom 조절
+    [imgScaleInput, imgOffsetXInput, imgOffsetYInput].forEach(inp => {
+      inp.addEventListener('input', () => {
+        if (currentCardSide === 'front') drawCard();
+      });
+    });
+
+    resetTransformBtn.addEventListener('click', () => {
+      imgScaleInput.value = 100;
+      imgOffsetXInput.value = 0;
+      imgOffsetYInput.value = 0;
+      if (currentCardSide === 'front') drawCard();
+    });
+
+    // 특성 토글
+    if (isMove1AbilityInput) {
+      isMove1AbilityInput.addEventListener('change', function() {
+        if (this.checked) {
+          move1CostWrapper.classList.add('hidden');
+          move1NameWrapper.className = 'sm:col-span-3';
+          move1DmgWrapper.classList.add('hidden');
+          move1NameLabel.textContent = '특성 이름';
+          move1DescLabel.textContent = '특성 효과 설명문';
+          if (move1NameInput.value === '이불 덮기') {
+            move1NameInput.value = '마성의 포근함';
+            move1DescInput.value = '이 하프몬이 배틀필드에 있는 한, 상대 하프몬의 기술의 데미지를 -30 받는다.';
+          }
+        } else {
+          move1CostWrapper.classList.remove('hidden');
+          move1NameWrapper.className = 'sm:col-span-2';
+          move1DmgWrapper.classList.remove('hidden');
+          move1NameLabel.textContent = '기술 이름';
+          move1DescLabel.textContent = '설명문';
+          if (move1NameInput.value === '마성의 포근함') {
+            move1NameInput.value = '이불 덮기';
+            move1DescInput.value = '이 하프몬의 HP를 20 회복하고 잠듦 상태로 만든다.';
+          }
+        }
+        if (currentCardSide === 'front') drawCard();
+      });
+    }
+
+    // 텍스트 인풋 전체 바인딩
+    const allInputs = [
+      cardNameInput, cardHpInput, cardSubInput, borderColorInput,
+      move1CostInput, move1NameInput, move1DmgInput, move1DescInput,
+      move2CostInput, move2NameInput, move2DmgInput, move2DescInput,
+      trainerDescInput,
+      weaknessInput, resistanceInput, retreatInput, flavorTextInput, illustratorInput,
+      regulationMarkInput, setCardPackInput, collectionNumInput, cardRarityInput
+    ];
+
+    allInputs.forEach(input => {
+      if (input) {
+        input.addEventListener('input', () => {
+          if (currentCardSide === 'front') drawCard();
+        });
+      }
+    });
+
+    isExCardInput.addEventListener('change', () => {
+      if (currentCardSide === 'front') drawCard();
+    });
+
+    // 랜덤 하프몬 생성기
+    randomCardBtn.addEventListener('click', () => {
+      const presets = [
+        {
+          name: '불꼬미', hp: '90', type: 'madness', border: '#ef4444',
+          sub: '기본 하프몬', isEx: false,
+          m1Cost: '🔥', m1Name: '불꽃세례', m1Dmg: '20', m1Desc: '동전을 1회 던져서 앞면이 나오면 20데미지를 추가한다.',
+          m2Cost: '🔥🔥✶', m2Name: '플레임 버스트', m2Dmg: '70', m2Desc: '이 하프몬에게 붙어 있는 불꽃 에너지를 1개 트래쉬한다.',
+          flavor: '꼬리에서 뿜어져 나오는 불꽃으로 상대의 기선을 제압한다.'
+        },
+        {
+          name: '잎새몬 ex', hp: '130', type: 'purity', border: '#16a34a',
+          sub: '1진화', isEx: true,
+          m1Cost: '🍀', m1Name: '광합성', m1Dmg: '', m1Desc: '자신의 덱에서 풀 에너지를 1장 선택해서 이 하프몬에게 붙인다.',
+          m2Cost: '🍀🍀✶', m2Name: '솔라 블레이드', m2Dmg: '110', m2Desc: '상대 하프몬에게 데미지를 주고 이 하프몬의 HP를 30 회복한다.',
+          flavor: '맑은 햇살을 머금어 주위의 모든 것을 정화시키는 신비한 잎사귀.'
+        },
+        {
+          name: '이부리', hp: '80', type: 'depression', border: '#0284c7',
+          sub: '기본 하프몬', isEx: false,
+          m1Cost: '🌀', m1Name: '이불 덮기', m1Dmg: '30', m1Desc: '이 하프몬의 HP를 20 회복하고 잠듦 상태로 만든다.',
+          m2Cost: '🌀🌀✶', m2Name: '푹신푹신 프레스', m2Dmg: '90', m2Desc: '상대 하프몬을 마비 상태로 만든다.',
+          flavor: '한번 들어가면 절대 빠져나올 수 없는 마성의 포근함을 지녔다.'
+        }
+      ];
+      const p = presets[Math.floor(Math.random() * presets.length)];
+      setCardCategory('albbamon');
+      cardNameInput.value = p.name;
+      cardHpInput.value = p.hp;
+      currentCardType = p.type;
+      updateTypeButtonStyles(p.type);
+      borderColorInput.value = p.border;
+      cardSubInput.value = p.sub;
+      updateStageButtonStyles(p.sub);
+      isExCardInput.checked = p.isEx;
+      isMove1AbilityInput.checked = false;
+      move1CostWrapper.classList.remove('hidden');
+      move1NameWrapper.className = 'sm:col-span-2';
+      move1DmgWrapper.classList.remove('hidden');
+      move1NameLabel.textContent = '기술 이름';
+      move1DescLabel.textContent = '설명문';
+
+      move1CostInput.value = p.m1Cost;
+      move1NameInput.value = p.m1Name;
+      move1DmgInput.value = p.m1Dmg;
+      move1DescInput.value = p.m1Desc;
+
+      move2CostInput.value = p.m2Cost;
+      move2NameInput.value = p.m2Name;
+      move2DmgInput.value = p.m2Dmg;
+      move2DescInput.value = p.m2Desc;
+      flavorTextInput.value = p.flavor;
+
+      drawCard();
+    });
+
+    // 300 DPI 메타데이터 주입
+    function setPngDpi(dataUrl, dpi = 300) {
+      const ppm = Math.round(dpi / 0.0254);
+      const binary = atob(dataUrl.split(',')[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+
+      if (bytes[0] !== 0x89 || bytes[1] !== 0x50) return dataUrl;
+
+      const chunkData = new Uint8Array(9);
+      chunkData[0] = (ppm >> 24) & 0xff;
+      chunkData[1] = (ppm >> 16) & 0xff;
+      chunkData[2] = (ppm >> 8) & 0xff;
+      chunkData[3] = ppm & 0xff;
+      chunkData[4] = (ppm >> 24) & 0xff;
+      chunkData[5] = (ppm >> 16) & 0xff;
+      chunkData[6] = (ppm >> 8) & 0xff;
+      chunkData[7] = ppm & 0xff;
+      chunkData[8] = 1;
+
+      const type = [0x70, 0x48, 0x59, 0x73];
+      let crc = 0xffffffff;
+      const crcTable = [];
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) {
+          c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+        }
+        crcTable[n] = c;
+      }
+      for (let b of type) crc = crcTable[(crc ^ b) & 0xff] ^ (crc >>> 8);
+      for (let b of chunkData) crc = crcTable[(crc ^ b) & 0xff] ^ (crc >>> 8);
+      crc = (crc ^ 0xffffffff) >>> 0;
+
+      const chunk = new Uint8Array(21);
+      chunk[0] = 0; chunk[1] = 0; chunk[2] = 0; chunk[3] = 9;
+      chunk.set(type, 4);
+      chunk.set(chunkData, 8);
+      chunk[17] = (crc >> 24) & 0xff;
+      chunk[18] = (crc >> 16) & 0xff;
+      chunk[19] = (crc >> 8) & 0xff;
+      chunk[20] = crc & 0xff;
+
+      const newBytes = new Uint8Array(bytes.length + chunk.length);
+      newBytes.set(bytes.subarray(0, 33), 0);
+      newBytes.set(chunk, 33);
+      newBytes.set(bytes.subarray(33), 33 + chunk.length);
+
+      let newBinary = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < newBytes.length; i += chunkSize) {
+        newBinary += String.fromCharCode.apply(null, newBytes.subarray(i, i + chunkSize));
+      }
+      return 'data:image/png;base64,' + btoa(newBinary);
+    }
+
+    // 단일 다운로드
+    function downloadCardImage(targetSide = currentCardSide) {
+      const rawName = cardNameInput.value.trim() || 'harpmon_card';
+      const safeName = rawName.replace(/[/\\?%*:|"<>]/g, '_');
+      const suffix = targetSide === 'back' ? '_back' : '_front';
+      const filename = `${safeName}${suffix}_300dpi.png`;
+
+      // 가이드라인 제거 후 깨끗하게 렌더링
+      const prevGuide = showBleedGuideInput ? showBleedGuideInput.checked : false;
+      if (showBleedGuideInput) showBleedGuideInput.checked = false;
+
+      if (targetSide === 'front') drawCard();
+      else drawCardBack();
+
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = 1500;
+      exportCanvas.height = 2100;
+      const expCtx = exportCanvas.getContext('2d');
+      expCtx.imageSmoothingEnabled = true;
+      expCtx.imageSmoothingQuality = 'high';
+      expCtx.drawImage(canvas, 0, 0, 1500, 2100);
+
+      const rawDataUrl = exportCanvas.toDataURL('image/png', 1.0);
+      const highDpiDataUrl = setPngDpi(rawDataUrl, 300);
+
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = highDpiDataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 복구
+      if (showBleedGuideInput) showBleedGuideInput.checked = prevGuide;
+      if (currentCardSide === 'front') drawCard();
+      else drawCardBack();
+    }
+
+    // 앞/뒷면 일괄 다운로드
+    function downloadBothSides() {
+      downloadCardImage('front');
+      setTimeout(() => {
+        downloadCardImage('back');
+      }, 500);
+    }
+
+    // 2mm 도련(재단 여백 확장: 1548 × 2148 px) 다운로드
+    function downloadBleedImage(targetSide = currentCardSide) {
+      const rawName = cardNameInput.value.trim() || 'harpmon_card';
+      const safeName = rawName.replace(/[/\\?%*:|"<>]/g, '_');
+      const suffix = targetSide === 'back' ? '_back' : '_front';
+      const filename = `${safeName}${suffix}_2mm_bleed_300dpi.png`;
+
+      const prevGuide = showBleedGuideInput ? showBleedGuideInput.checked : false;
+      if (showBleedGuideInput) showBleedGuideInput.checked = false;
+
+      if (targetSide === 'front') drawCard();
+      else drawCardBack();
+
+      // 300 DPI 기준 2mm = 24px (양옆 합산 48px -> 1548 × 2148 px)
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = 1548;
+      exportCanvas.height = 2148;
+      const expCtx = exportCanvas.getContext('2d');
+      expCtx.imageSmoothingEnabled = true;
+      expCtx.imageSmoothingQuality = 'high';
+
+      // 1. 도련 영역 외곽 테두리 색상 확장 채움
+      if (targetSide === 'front') {
+        expCtx.fillStyle = borderColorInput.value || '#0284c7';
+      } else {
+        expCtx.fillStyle = '#060a16';
+      }
+      expCtx.fillRect(0, 0, 1548, 2148);
+
+      // 2. 중앙에 원본 1500 × 2100 px 배치 (상하좌우 24px 도련 여백 확보)
+      expCtx.drawImage(canvas, 24, 24, 1500, 2100);
+
+      const rawDataUrl = exportCanvas.toDataURL('image/png', 1.0);
+      const highDpiDataUrl = setPngDpi(rawDataUrl, 300);
+
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = highDpiDataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      if (showBleedGuideInput) showBleedGuideInput.checked = prevGuide;
+      if (currentCardSide === 'front') drawCard();
+      else drawCardBack();
+    }
+
+    downloadBtn.addEventListener('click', () => downloadCardImage());
+    downloadBtnTop.addEventListener('click', () => downloadCardImage());
+    downloadBothBtn.addEventListener('click', downloadBothSides);
+    downloadBleedBtn.addEventListener('click', () => downloadBleedImage());
+    downloadBleedBtnTop.addEventListener('click', () => downloadBleedImage());
+
+    // 초기화 및 첫 로딩
+    window.addEventListener('load', () => {
+      currentImage = createDefaultArtwork();
+      currentImage.onload = () => {
+        drawCard();
+      };
+      if (document.fonts) {
+        document.fonts.ready.then(() => {
+          if (currentCardSide === 'front') drawCard();
+          else drawCardBack();
+        });
+      }
+      setTimeout(drawCard, 150);
+    });
+  </script>
+</body>
+</html>
